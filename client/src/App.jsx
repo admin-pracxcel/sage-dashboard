@@ -1,17 +1,20 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useLeads } from './hooks/useLeads';
-import { today, toDateString } from './lib/dates';
+import { today, currentMonthRange, priorSameLengthRange } from './lib/dates';
 import {
   applyDateRange,
   filterBySource,
   filterNewPatients,
   filterMissedOpportunities,
+  dailyCountsByDay,
 } from './lib/transform';
+import { formatCompareLabel, formatMainLabel } from './lib/format';
 import DashboardHeader from './components/DashboardHeader';
 import DateRangeFilter from './components/DateRangeFilter';
 import HighlightsSection from './components/HighlightsSection';
 import SourceSection from './components/SourceSection';
 import LeadModal from './components/LeadModal';
+import DeltaChip from './components/DeltaChip';
 
 const maxDate = today();
 
@@ -68,34 +71,121 @@ function ErrorState({ message, onRetry }) {
   );
 }
 
+// Small helper — sum two day-of-period-indexed arrays.
+function mergeDailySeries(a, b) {
+  const length = Math.max(a.length, b.length);
+  const out = [];
+  for (let i = 0; i < length; i++) {
+    out.push({ day: i + 1, count: (a[i]?.count || 0) + (b[i]?.count || 0) });
+  }
+  return out;
+}
+
 export default function App() {
   const { data, isLoading, isError, error, refresh, isRefreshing } = useLeads();
-  const [dateRange, setDateRange] = useState({
-    from: toDateString(today()),
-    to: toDateString(maxDate),
-  });
+
+  const initialMain = useMemo(() => currentMonthRange(), []);
+  const [mainRange, setMainRangeState] = useState(initialMain);
+  const [compareRange, setCompareRangeState] = useState(() => priorSameLengthRange(initialMain));
+  const [compareIsCustom, setCompareIsCustom] = useState(false);
   const [modal, setModal] = useState(null);
+
+  function setMainRange(newRange) {
+    setMainRangeState(newRange);
+    if (!compareIsCustom) {
+      setCompareRangeState(priorSameLengthRange(newRange));
+    }
+  }
+
+  function setCompareRange(newRange) {
+    setCompareRangeState(newRange);
+    setCompareIsCustom(true);
+  }
+
+  function resetCompareRange() {
+    setCompareRangeState(priorSameLengthRange(mainRange));
+    setCompareIsCustom(false);
+  }
+
+  const compareLabel = formatCompareLabel(compareRange);
+  const mainLabel = formatMainLabel(mainRange);
+
+  const {
+    mainCounts,
+    compareCounts,
+    seoDaily,
+    ppcDaily,
+    highlightsDaily,
+    missedCalls,
+    seoNewLeads,
+    ppcNewLeads,
+  } = useMemo(() => {
+    const website = data?.website ?? [];
+    const calls = data?.calls ?? [];
+
+    function computeCounts(range) {
+      const filtered = applyDateRange({ website, calls }, range.from, range.to);
+      const newPatients = filterNewPatients(filtered);
+      const missed = filterMissedOpportunities(filtered);
+      const seo = filterBySource(filtered, 'SEO');
+      const ppc = filterBySource(filtered, 'PPC');
+      const seoNew = filterNewPatients(seo);
+      const ppcNew = filterNewPatients(ppc);
+      return {
+        newPatients,
+        missed,
+        seoNew,
+        ppcNew,
+        counts: {
+          totalNewPatients: newPatients.website.length + newPatients.calls.length,
+          missedOpportunities: missed.calls.length,
+          seo: { websiteNew: seoNew.website.length, callsNew: seoNew.calls.length },
+          ppc: { websiteNew: ppcNew.website.length, callsNew: ppcNew.calls.length },
+        },
+      };
+    }
+
+    const main = computeCounts(mainRange);
+    const compare = computeCounts(compareRange);
+
+    // Section-level daily series. For section charts we count all "new patient" leads
+    // in that section (website new + calls new), giving a single trend line per section.
+    function seriesFor(rows, dateField, range) {
+      return dailyCountsByDay(rows, dateField, range);
+    }
+
+    function sectionSeries(newLeads, range) {
+      return mergeDailySeries(
+        seriesFor(newLeads.website, 'leadDate', range),
+        seriesFor(newLeads.calls, 'dateTime', range),
+      );
+    }
+
+    return {
+      mainCounts: main.counts,
+      compareCounts: compare.counts,
+      highlightsDaily: {
+        main: sectionSeries(main.newPatients, mainRange),
+        compare: sectionSeries(compare.newPatients, compareRange),
+      },
+      seoDaily: {
+        main: sectionSeries(main.seoNew, mainRange),
+        compare: sectionSeries(compare.seoNew, compareRange),
+      },
+      ppcDaily: {
+        main: sectionSeries(main.ppcNew, mainRange),
+        compare: sectionSeries(compare.ppcNew, compareRange),
+      },
+      missedCalls: main.missed.calls,
+      seoNewLeads: main.seoNew,
+      ppcNewLeads: main.ppcNew,
+    };
+  }, [data, mainRange, compareRange]);
 
   if (isLoading) return <LoadingSkeleton />;
   if (isError) return <ErrorState message={error.message} onRetry={refresh} />;
 
-  const { website, calls, fetchedAt } = data;
-
-  const filtered = applyDateRange({ website, calls }, dateRange.from, dateRange.to);
-  const newPatients = filterNewPatients(filtered);
-  const missed = filterMissedOpportunities(filtered);
-
-  const seo = filterBySource(filtered, 'SEO');
-  const ppc = filterBySource(filtered, 'PPC');
-  const seoNew = filterNewPatients(seo);
-  const ppcNew = filterNewPatients(ppc);
-
-  const counts = {
-    totalNewPatients: newPatients.website.length + newPatients.calls.length,
-    missedOpportunities: missed.calls.length,
-    seo: { websiteNew: seoNew.website.length, callsNew: seoNew.calls.length },
-    ppc: { websiteNew: ppcNew.website.length, callsNew: ppcNew.calls.length },
-  };
+  const { fetchedAt } = data;
 
   function openModal(title, type, leads) {
     setModal({ title, type, leads });
@@ -108,22 +198,44 @@ export default function App() {
           fetchedAt={fetchedAt}
           isRefreshing={isRefreshing}
           onRefresh={refresh}
+          compareRange={compareRange}
+          onCompareChange={setCompareRange}
+          onCompareReset={resetCompareRange}
         />
 
         <div className="mb-8">
           <DateRangeFilter
-            dateRange={dateRange}
+            dateRange={mainRange}
             maxDate={maxDate}
-            onChange={setDateRange}
+            onChange={setMainRange}
           />
         </div>
 
         <h2 className="mb-5 font-display text-2xl text-gray-900">Summary</h2>
 
         <HighlightsSection
-          totalNewPatients={counts.totalNewPatients}
-          missedOpportunities={counts.missedOpportunities}
-          onViewMissed={() => openModal('Missed Opportunities', 'calls', missed.calls)}
+          totalNewPatients={mainCounts.totalNewPatients}
+          missedOpportunities={mainCounts.missedOpportunities}
+          onViewMissed={() => openModal('Missed Opportunities', 'calls', missedCalls)}
+          mainSeries={highlightsDaily.main}
+          compareSeries={highlightsDaily.compare}
+          mainLabel={mainLabel}
+          compareLabel={compareLabel}
+          deltaChipNewPatients={
+            <DeltaChip
+              current={mainCounts.totalNewPatients}
+              previous={compareCounts.totalNewPatients}
+              compareLabel={compareLabel}
+            />
+          }
+          deltaChipMissed={
+            <DeltaChip
+              current={mainCounts.missedOpportunities}
+              previous={compareCounts.missedOpportunities}
+              invert
+              compareLabel={compareLabel}
+            />
+          }
         />
 
         <div className="mt-10 space-y-10">
@@ -131,20 +243,56 @@ export default function App() {
             <SourceSection
               title="SEO"
               subtitle="Google Searches, Google Business, AI Search"
-              websiteNewCount={counts.seo.websiteNew}
-              callsNewCount={counts.seo.callsNew}
-              onViewWebsite={() => openModal('SEO — Website Leads', 'website', seoNew.website)}
-              onViewCalls={() => openModal('SEO — Phone Calls', 'calls', seoNew.calls)}
+              websiteNewCount={mainCounts.seo.websiteNew}
+              callsNewCount={mainCounts.seo.callsNew}
+              onViewWebsite={() => openModal('SEO — Website Leads', 'website', seoNewLeads.website)}
+              onViewCalls={() => openModal('SEO — Phone Calls', 'calls', seoNewLeads.calls)}
+              mainSeries={seoDaily.main}
+              compareSeries={seoDaily.compare}
+              mainLabel={mainLabel}
+              compareLabel={compareLabel}
+              deltaChipWebsite={
+                <DeltaChip
+                  current={mainCounts.seo.websiteNew}
+                  previous={compareCounts.seo.websiteNew}
+                  compareLabel={compareLabel}
+                />
+              }
+              deltaChipCalls={
+                <DeltaChip
+                  current={mainCounts.seo.callsNew}
+                  previous={compareCounts.seo.callsNew}
+                  compareLabel={compareLabel}
+                />
+              }
             />
           </div>
           <div className="animate-slide-up stagger-5 opacity-0">
             <SourceSection
               title="PPC"
               subtitle="Google Ads"
-              websiteNewCount={counts.ppc.websiteNew}
-              callsNewCount={counts.ppc.callsNew}
-              onViewWebsite={() => openModal('PPC — Website Leads', 'website', ppcNew.website)}
-              onViewCalls={() => openModal('PPC — Phone Calls', 'calls', ppcNew.calls)}
+              websiteNewCount={mainCounts.ppc.websiteNew}
+              callsNewCount={mainCounts.ppc.callsNew}
+              onViewWebsite={() => openModal('PPC — Website Leads', 'website', ppcNewLeads.website)}
+              onViewCalls={() => openModal('PPC — Phone Calls', 'calls', ppcNewLeads.calls)}
+              mainSeries={ppcDaily.main}
+              compareSeries={ppcDaily.compare}
+              mainLabel={mainLabel}
+              compareLabel={compareLabel}
+              deltaChipWebsite={
+                <DeltaChip
+                  current={mainCounts.ppc.websiteNew}
+                  previous={compareCounts.ppc.websiteNew}
+                  compareLabel={compareLabel}
+                />
+              }
+              deltaChipCalls={
+                <DeltaChip
+                  current={mainCounts.ppc.callsNew}
+                  previous={compareCounts.ppc.callsNew}
+                  compareLabel={compareLabel}
+                />
+              }
             />
           </div>
         </div>
