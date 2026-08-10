@@ -5,7 +5,8 @@ export default function SectionCompareChart({
   compareSeries,
   mainLabel,
   compareLabel,
-  accentColor,
+  mainColor,
+  compareColor,
 }) {
   // Truncate to overlap length so both bars cover the same x-range.
   const length = Math.min(mainSeries.length, compareSeries.length);
@@ -29,31 +30,36 @@ export default function SectionCompareChart({
             interval="preserveStartEnd"
           />
           <Tooltip
+            cursor={{ fill: 'rgba(255,255,255,0.05)' }}
             contentStyle={{
               fontSize: 12,
               borderRadius: 8,
-              border: '1px solid #E8E5E0',
-              backgroundColor: '#FFFFFF',
+              border: '1px solid rgba(255,255,255,0.15)',
+              backgroundColor: 'rgba(19, 26, 21, 0.95)',
+              color: '#FFFFFF',
+              padding: '8px 10px',
             }}
+            labelStyle={{ color: 'rgba(255,255,255,0.6)', fontSize: 11, marginBottom: 4 }}
+            itemStyle={{ color: '#FFFFFF' }}
             labelFormatter={(day) => `Day ${day}`}
             formatter={(value, name) => [value, name === 'main' ? mainLabel : compareLabel]}
           />
           <Legend
-            wrapperStyle={{ fontSize: 11 }}
+            wrapperStyle={{ fontSize: 11, color: 'rgba(255,255,255,0.8)' }}
             formatter={(name) => (name === 'main' ? mainLabel : compareLabel)}
             iconSize={8}
           />
           <Bar
             dataKey="main"
-            fill={accentColor}
+            fill={mainColor}
             fillOpacity={1}
             radius={[2, 2, 0, 0]}
             isAnimationActive={false}
           />
           <Bar
             dataKey="compare"
-            fill={accentColor}
-            fillOpacity={0.3}
+            fill={compareColor}
+            fillOpacity={1}
             radius={[2, 2, 0, 0]}
             isAnimationActive={false}
           />

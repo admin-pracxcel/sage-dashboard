@@ -215,12 +215,12 @@ export default function App() {
         {/* Right rail gradient — absolute, behind the rail column, spans full page height */}
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-y-0 right-0 hidden w-[280px] bg-gradient-to-b from-brand via-brand-dark to-brand-deep md:block"
+          className="pointer-events-none absolute inset-y-0 right-0 hidden w-[360px] bg-gradient-to-b from-brand via-brand-dark to-brand-deep md:block"
         />
 
         {/* Page-level CSS Grid: two columns on md+, one column on mobile.
             gap-0 so right-column cells touch to form one continuous gradient rail. */}
-        <div className="relative md:grid md:grid-cols-[minmax(0,1fr)_280px]">
+        <div className="relative md:grid md:grid-cols-[minmax(0,1fr)_360px]">
 
           {/* ── Row 1: Header + DateRangeFilter + banner + Summary heading / "Compared With" ── */}
           <LeftCell className="pt-6 md:pt-10 pb-5">
@@ -295,7 +295,8 @@ export default function App() {
                 compareSeries={highlightsDaily.compare}
                 mainLabel={mainLabel}
                 compareLabel={compareLabel}
-                accentColor="#FFFFFF"
+                mainColor="#FFFFFF"
+                compareColor="#F59E0B"
               />
             </div>
           </RailCell>
@@ -337,7 +338,8 @@ export default function App() {
                 compareSeries={seoDaily.compare}
                 mainLabel={mainLabel}
                 compareLabel={compareLabel}
-                accentColor="#FFFFFF"
+                mainColor="#FFFFFF"
+                compareColor="#F59E0B"
               />
             </div>
           </RailCell>
@@ -379,7 +381,8 @@ export default function App() {
                 compareSeries={ppcDaily.compare}
                 mainLabel={mainLabel}
                 compareLabel={compareLabel}
-                accentColor="#FFFFFF"
+                mainColor="#FFFFFF"
+                compareColor="#F59E0B"
               />
             </div>
           </RailCell>
