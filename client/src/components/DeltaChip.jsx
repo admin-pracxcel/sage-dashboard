@@ -6,14 +6,14 @@ export default function DeltaChip({ current, previous, compareLabel, hideCompare
     tone = 'text-gray-400';
     text = hideCompareLabel ? '—' : `— vs ${compareLabel}`;
   } else if (previous === 0 && current > 0) {
-    tone = 'text-brand';
+    tone = 'text-[#00ff00]';
     text = `↑ ${current}${hideCompareLabel ? '' : ` vs ${compareLabel}`}`;
   } else {
     const delta = current - previous;
     const pct = Math.round((delta / previous) * 100);
     const arrow = delta > 0 ? '↑' : delta < 0 ? '↓' : '→';
     const pctSign = delta > 0 ? '+' : delta < 0 ? '−' : '';
-    tone = delta === 0 ? 'text-gray-400' : delta > 0 ? 'text-brand' : 'text-accent-rose';
+    tone = delta === 0 ? 'text-gray-400' : delta > 0 ? 'text-[#00ff00]' : 'text-accent-rose';
     text = `${arrow} ${Math.abs(delta)} (${pctSign}${Math.abs(pct)}%)${hideCompareLabel ? '' : ` vs ${compareLabel}`}`;
   }
 
