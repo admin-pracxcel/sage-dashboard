@@ -1,5 +1,66 @@
 import { useEffect } from 'react';
-import { WebsiteLeadRow, CallLeadRow } from './LeadRow';
+import { WebsiteLeadRow, BookAppointmentLeadRow, CallLeadRow } from './LeadRow';
+
+function SectionHeading({ label, count }) {
+  return (
+    <div className="mb-3 mt-2 flex items-baseline gap-2">
+      <h4 className="text-sm font-semibold text-gray-700">{label}</h4>
+      <span className="text-xs text-gray-400">({count})</span>
+    </div>
+  );
+}
+
+function ContactTable({ leads }) {
+  return (
+    <table className="w-full text-left">
+      <thead>
+        <tr className="border-b border-surface-border">
+          <th className="pb-3 text-[11px] font-semibold uppercase tracking-wider text-gray-400">Email</th>
+          <th className="pb-3 text-[11px] font-semibold uppercase tracking-wider text-gray-400">Country</th>
+          <th className="pb-3 text-[11px] font-semibold uppercase tracking-wider text-gray-400">Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {leads.map((l, i) => <WebsiteLeadRow key={i} lead={l} index={i} />)}
+      </tbody>
+    </table>
+  );
+}
+
+function AppointmentTable({ leads }) {
+  return (
+    <table className="w-full text-left">
+      <thead>
+        <tr className="border-b border-surface-border">
+          <th className="pb-3 text-[11px] font-semibold uppercase tracking-wider text-gray-400">Session Source</th>
+          <th className="pb-3 text-[11px] font-semibold uppercase tracking-wider text-gray-400">Medium</th>
+          <th className="pb-3 text-[11px] font-semibold uppercase tracking-wider text-gray-400">Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {leads.map((l, i) => <BookAppointmentLeadRow key={i} lead={l} index={i} />)}
+      </tbody>
+    </table>
+  );
+}
+
+function CallsTable({ leads }) {
+  return (
+    <table className="w-full text-left">
+      <thead>
+        <tr className="border-b border-surface-border">
+          <th className="pb-3 text-[11px] font-semibold uppercase tracking-wider text-gray-400">Caller</th>
+          <th className="pb-3 text-[11px] font-semibold uppercase tracking-wider text-gray-400">Date</th>
+          <th className="pb-3 text-[11px] font-semibold uppercase tracking-wider text-gray-400">Duration</th>
+          <th className="pb-3 text-[11px] font-semibold uppercase tracking-wider text-gray-400">Recording</th>
+        </tr>
+      </thead>
+      <tbody>
+        {leads.map((l, i) => <CallLeadRow key={i} lead={l} index={i} />)}
+      </tbody>
+    </table>
+  );
+}
 
 export default function LeadModal({ title, type, leads, onClose }) {
   useEffect(() => {
@@ -49,32 +110,30 @@ export default function LeadModal({ title, type, leads, onClose }) {
             <div className="py-12 text-center">
               <p className="text-sm text-gray-400">No leads match this filter.</p>
             </div>
-          ) : (
-            <table className="w-full text-left">
-              <thead>
-                <tr className="border-b border-surface-border">
-                  {isWebsite ? (
-                    <>
-                      <th className="pb-3 text-[11px] font-semibold uppercase tracking-wider text-gray-400">Email</th>
-                      <th className="pb-3 text-[11px] font-semibold uppercase tracking-wider text-gray-400">Country</th>
-                      <th className="pb-3 text-[11px] font-semibold uppercase tracking-wider text-gray-400">Date</th>
-                    </>
-                  ) : (
-                    <>
-                      <th className="pb-3 text-[11px] font-semibold uppercase tracking-wider text-gray-400">Caller</th>
-                      <th className="pb-3 text-[11px] font-semibold uppercase tracking-wider text-gray-400">Date</th>
-                      <th className="pb-3 text-[11px] font-semibold uppercase tracking-wider text-gray-400">Duration</th>
-                      <th className="pb-3 text-[11px] font-semibold uppercase tracking-wider text-gray-400">Recording</th>
-                    </>
+          ) : isWebsite ? (
+            (() => {
+              const contactLeads = leads.filter((l) => l.type !== 'appointment');
+              const appointmentLeads = leads.filter((l) => l.type === 'appointment');
+              const showHeadings = contactLeads.length > 0 && appointmentLeads.length > 0;
+              return (
+                <div className="space-y-6">
+                  {contactLeads.length > 0 && (
+                    <section>
+                      {showHeadings && <SectionHeading label="Contact form" count={contactLeads.length} />}
+                      <ContactTable leads={contactLeads} />
+                    </section>
                   )}
-                </tr>
-              </thead>
-              <tbody>
-                {isWebsite
-                  ? leads.map((l, i) => <WebsiteLeadRow key={i} lead={l} index={i} />)
-                  : leads.map((l, i) => <CallLeadRow key={i} lead={l} index={i} />)}
-              </tbody>
-            </table>
+                  {appointmentLeads.length > 0 && (
+                    <section>
+                      {showHeadings && <SectionHeading label="Book Appointment" count={appointmentLeads.length} />}
+                      <AppointmentTable leads={appointmentLeads} />
+                    </section>
+                  )}
+                </div>
+              );
+            })()
+          ) : (
+            <CallsTable leads={leads} />
           )}
         </div>
       </div>

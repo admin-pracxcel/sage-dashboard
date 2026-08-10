@@ -75,11 +75,17 @@ function normalizeBookAppointmentLead(row, headers) {
     return null;
   }
 
+  const sessionSource = get('Session Source');
+  const sessionMedium = get('Session Medium');
+
   return {
+    type: 'appointment',
     email: null,
     isExistingPatient: null,
     country: null,
-    source: mapBookAppointmentSource(get('Session Source'), get('Session Medium')),
+    source: mapBookAppointmentSource(sessionSource, sessionMedium),
+    sessionSource: sessionSource || null,
+    sessionMedium: sessionMedium || null,
     leadDate: parsed.toISOString(),
   };
 }
@@ -112,6 +118,7 @@ function normalizeContactLead(row, headers) {
   );
 
   return {
+    type: 'contact',
     email: get('Email'),
     isExistingPatient: null,
     country,
