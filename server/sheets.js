@@ -31,6 +31,20 @@ function mapWebsiteSource(raw) {
   return raw === 'google_paid' ? 'PPC' : 'SEO';
 }
 
+// GA4-style Book Appointment: PPC if the medium/source signals paid traffic;
+// SEO otherwise. Defaults to SEO for unknown values so paid attribution
+// isn't inflated.
+function mapBookAppointmentSource(sessionSource, sessionMedium) {
+  const source = (sessionSource || '').toLowerCase();
+  const medium = (sessionMedium || '').toLowerCase();
+
+  if (medium === 'cpc') return 'PPC';
+  if (medium.startsWith('paid')) return 'PPC';
+  if (source.includes('ads')) return 'PPC';
+  if (source.includes('paid')) return 'PPC';
+  return 'SEO';
+}
+
 function mapCallsSource(raw) {
   return raw === 'Google Ads' ? 'PPC' : 'SEO';
 }
@@ -38,34 +52,62 @@ function mapCallsSource(raw) {
 // ---------------------------------------------------------------------------
 // Row normalization
 // ---------------------------------------------------------------------------
-function normalizeWebsiteLead(row, headers) {
+// Book Appointment tab: GA4-only, 3 columns, no PII.
+// Booked At format: "2026-08-10 09:15:30" (Perth local time, no TZ suffix).
+function normalizeBookAppointmentLead(row, headers) {
   const get = (col) => {
     const idx = headers.indexOf(col);
     return idx >= 0 ? (row[idx] ?? '') : '';
   };
 
-  const rawPatient = get('Are you an existing patient?');
-  const isExistingPatient =
-    rawPatient === 'Yes' ? 'Yes' : rawPatient === 'No' ? 'No' : null;
+  const rawDate = get('Booked At');
+  const parsed = new Date(rawDate.replace(' ', 'T'));
+  if (!isValid(parsed)) {
+    console.warn('Dropping Book Appointment row — bad date:', rawDate);
+    return null;
+  }
+
+  return {
+    email: null,
+    isExistingPatient: null,
+    country: null,
+    source: mapBookAppointmentSource(get('Session Source'), get('Session Medium')),
+    leadDate: parsed.toISOString(),
+  };
+}
+
+// Contact tab: legacy form-fill schema. Columns include First/Last Name,
+// Email, Phone, Message, Lead Country, Lead Source, Lead Date.
+// Lead Date format: "April 15, 2026 at 3:15 PM".
+function normalizeContactLead(row, headers) {
+  const get = (col) => {
+    const idx = headers.indexOf(col);
+    return idx >= 0 ? (row[idx] ?? '') : '';
+  };
 
   const rawCountry = get('Lead Country');
   const country = rawCountry && rawCountry !== '-' ? rawCountry : null;
 
-  // "April 15, 2026 at 3:15 PM"
   const rawDate = get('Lead Date');
   const parsed = parse(rawDate, "MMMM d, yyyy 'at' h:mm a", new Date());
   if (!isValid(parsed)) {
-    console.warn('Dropping website lead — bad date:', rawDate);
+    console.warn('Dropping Contact row — bad date:', rawDate);
     return null;
   }
 
   return {
     email: get('Email'),
-    isExistingPatient,
+    isExistingPatient: null,
     country,
     source: mapWebsiteSource(get('Lead Source')),
     leadDate: parsed.toISOString(),
   };
+}
+
+// Dispatch to the right normalizer based on which schema this tab uses.
+function normalizeWebsiteLead(row, headers) {
+  if (headers.includes('Booked At')) return normalizeBookAppointmentLead(row, headers);
+  return normalizeContactLead(row, headers);
 }
 
 function normalizeCallLead(row, headers) {
