@@ -1,0 +1,99 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    background-color: #FAF9F7;
+    @apply font-sans text-gray-800 antialiased;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: #D4D0C8;
+    @apply rounded-full;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-400;
+  }
+}
+
+@layer components {
+  /* Card */
+  .card {
+    @apply relative rounded-2xl;
+    background-color: #FFFFFF;
+    border: 1px solid #E8E5E0;
+    box-shadow:
+      0 1px 3px rgba(0, 0, 0, 0.04),
+      0 4px 16px rgba(0, 0, 0, 0.03);
+  }
+  .card:hover {
+    box-shadow:
+      0 2px 8px rgba(0, 0, 0, 0.06),
+      0 8px 32px rgba(0, 0, 0, 0.04);
+  }
+
+  /* Dot grid background */
+  .dot-grid {
+    background-image: radial-gradient(
+      rgba(0, 0, 0, 0.04) 1px,
+      transparent 1px
+    );
+    background-size: 24px 24px;
+  }
+
+  /* Ambient gradient */
+  .bg-mesh {
+    background:
+      radial-gradient(ellipse at 15% 0%, rgba(46, 62, 51, 0.06) 0%, transparent 50%),
+      radial-gradient(ellipse at 85% 5%, rgba(13, 148, 136, 0.04) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 100%, rgba(46, 62, 51, 0.03) 0%, transparent 40%);
+  }
+
+  /* Highlight card accent border (left edge) */
+  .accent-left-brand {
+    border-left: 3px solid #2e3e33;
+  }
+  .accent-left-rose {
+    border-left: 3px solid #E11D48;
+  }
+
+  /* Stagger delays */
+  .stagger-1 { animation-delay: 0.05s; }
+  .stagger-2 { animation-delay: 0.1s; }
+  .stagger-3 { animation-delay: 0.15s; }
+  .stagger-4 { animation-delay: 0.2s; }
+  .stagger-5 { animation-delay: 0.25s; }
+
+  /* Date inputs */
+  input[type="date"] {
+    @apply rounded-lg px-3 py-2 text-sm text-gray-700;
+    background-color: #FFFFFF;
+    border: 1px solid #E8E5E0;
+  }
+  input[type="date"]:focus {
+    @apply outline-none;
+    border-color: #2e3e33;
+    box-shadow: 0 0 0 2px rgba(46, 62, 51, 0.2);
+  }
+
+  /* Shimmer skeleton */
+  .skeleton-shimmer {
+    @apply rounded-xl;
+    background: linear-gradient(
+      90deg,
+      #f0efec 0%,
+      #e8e5e0 50%,
+      #f0efec 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 2s ease-in-out infinite;
+  }
+}
