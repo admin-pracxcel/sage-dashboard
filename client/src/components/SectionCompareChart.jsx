@@ -19,7 +19,7 @@ export default function SectionCompareChart({
   }));
 
   return (
-    <div className="mb-5 h-40 w-full rounded-xl p-3">
+    <div className="h-full w-full">
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={data} margin={{ top: 8, right: 12, left: 4, bottom: 4 }}>
           <XAxis

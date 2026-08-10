@@ -12,7 +12,7 @@ import { formatCompareLabel, formatMainLabel } from './lib/format';
 import DashboardHeader from './components/DashboardHeader';
 import DateRangeFilter from './components/DateRangeFilter';
 import HighlightsSection from './components/HighlightsSection';
-import SourceSection from './components/SourceSection';
+import SourceSection, { SourceSectionHeading } from './components/SourceSection';
 import SectionCompareChart from './components/SectionCompareChart';
 import CompareSidePanel from './components/CompareSidePanel';
 import LeadModal from './components/LeadModal';
@@ -263,7 +263,7 @@ export default function App() {
             />
           </RailCell>
 
-          {/* ── Row 2: Highlights section / Highlights chart card ── */}
+          {/* ── Row 2: Highlights cards / Summary chart — chart stretches to cards height ── */}
           <LeftCell className="pb-10">
             <HighlightsSection
               totalNewPatients={mainCounts.totalNewPatients}
@@ -286,25 +286,36 @@ export default function App() {
             />
           </LeftCell>
 
-          {/* Row 2 chart — vertically centered */}
-          <RailCell className="items-center py-4">
-            <div className="w-full min-h-[200px] rounded-xl bg-white/10 p-3">
+          <RailCell className="items-stretch pb-10">
+            <div className="flex h-full w-full flex-col rounded-xl bg-white/10 p-3">
               <p className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-white/50">Summary</p>
-              <SectionCompareChart
-                mainSeries={highlightsDaily.main}
-                compareSeries={highlightsDaily.compare}
-                mainLabel={mainLabel}
-                compareLabel={compareLabel}
-                mainColor="#FFFFFF"
-                compareColor="#F59E0B"
-              />
+              <div className="min-h-0 flex-1">
+                <SectionCompareChart
+                  mainSeries={highlightsDaily.main}
+                  compareSeries={highlightsDaily.compare}
+                  mainLabel={mainLabel}
+                  compareLabel={compareLabel}
+                  mainColor="#FFFFFF"
+                  compareColor="#F59E0B"
+                />
+              </div>
             </div>
           </RailCell>
 
-          {/* ── Row 3: SEO section / SEO chart card ── */}
-          <LeftCell className="pb-10">
+          {/* ── Row 3: SEO heading only (spans left cell), empty rail cell ── */}
+          <LeftCell className="pt-6">
+            <SourceSectionHeading
+              title="SEO"
+              subtitle="Google Searches, Google Business, AI Search"
+            />
+          </LeftCell>
+          <RailCell />
+
+          {/* ── Row 4: SEO cards / SEO chart — chart stretches to cards height ── */}
+          <LeftCell className="pb-10 pt-6">
             <div className="animate-slide-up stagger-4 opacity-0">
               <SourceSection
+                hideHeading
                 title="SEO"
                 subtitle="Google Searches, Google Business, AI Search"
                 websiteNewCount={mainCounts.seo.websiteNew}
@@ -329,25 +340,33 @@ export default function App() {
             </div>
           </LeftCell>
 
-          {/* Row 3 chart — top-aligned with SEO cards (offset past the section heading) */}
-          <RailCell className="items-start pb-4 pt-[88px]">
-            <div className="w-full min-h-[200px] rounded-xl bg-white/10 p-3">
+          <RailCell className="items-stretch pb-10 pt-6">
+            <div className="flex h-full w-full flex-col rounded-xl bg-white/10 p-3">
               <p className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-white/50">SEO</p>
-              <SectionCompareChart
-                mainSeries={seoDaily.main}
-                compareSeries={seoDaily.compare}
-                mainLabel={mainLabel}
-                compareLabel={compareLabel}
-                mainColor="#FFFFFF"
-                compareColor="#F59E0B"
-              />
+              <div className="min-h-0 flex-1">
+                <SectionCompareChart
+                  mainSeries={seoDaily.main}
+                  compareSeries={seoDaily.compare}
+                  mainLabel={mainLabel}
+                  compareLabel={compareLabel}
+                  mainColor="#FFFFFF"
+                  compareColor="#F59E0B"
+                />
+              </div>
             </div>
           </RailCell>
 
-          {/* ── Row 4: PPC section / PPC chart card ── */}
-          <LeftCell className="pb-10">
+          {/* ── Row 5: PPC heading only (spans left cell), empty rail cell ── */}
+          <LeftCell className="pt-6">
+            <SourceSectionHeading title="PPC" subtitle="Google Ads" />
+          </LeftCell>
+          <RailCell />
+
+          {/* ── Row 6: PPC cards / PPC chart — chart stretches to cards height ── */}
+          <LeftCell className="pb-10 pt-6">
             <div className="animate-slide-up stagger-5 opacity-0">
               <SourceSection
+                hideHeading
                 title="PPC"
                 subtitle="Google Ads"
                 websiteNewCount={mainCounts.ppc.websiteNew}
@@ -372,18 +391,19 @@ export default function App() {
             </div>
           </LeftCell>
 
-          {/* Row 4 chart — top-aligned with PPC cards (offset past the section heading) */}
-          <RailCell className="items-start pb-4 pt-[88px]">
-            <div className="w-full min-h-[200px] rounded-xl bg-white/10 p-3">
+          <RailCell className="items-stretch pb-10 pt-6">
+            <div className="flex h-full w-full flex-col rounded-xl bg-white/10 p-3">
               <p className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-white/50">PPC</p>
-              <SectionCompareChart
-                mainSeries={ppcDaily.main}
-                compareSeries={ppcDaily.compare}
-                mainLabel={mainLabel}
-                compareLabel={compareLabel}
-                mainColor="#FFFFFF"
-                compareColor="#F59E0B"
-              />
+              <div className="min-h-0 flex-1">
+                <SectionCompareChart
+                  mainSeries={ppcDaily.main}
+                  compareSeries={ppcDaily.compare}
+                  mainLabel={mainLabel}
+                  compareLabel={compareLabel}
+                  mainColor="#FFFFFF"
+                  compareColor="#F59E0B"
+                />
+              </div>
             </div>
           </RailCell>
 
