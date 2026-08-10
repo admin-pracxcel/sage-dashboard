@@ -185,7 +185,7 @@ export default function App() {
   if (isLoading) return <LoadingSkeleton />;
   if (isError) return <ErrorState message={error.message} onRetry={refresh} />;
 
-  const { fetchedAt } = data;
+  const { fetchedAt, errors } = data;
 
   function openModal(title, type, leads) {
     setModal({ title, type, leads });
@@ -210,6 +210,22 @@ export default function App() {
             onChange={setMainRange}
           />
         </div>
+
+        {errors && errors.length > 0 && (
+          <div className="mb-6 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
+            <p className="font-semibold">Some data could not be loaded:</p>
+            <ul className="mt-1 list-inside list-disc">
+              {errors.map((e) => (
+                <li key={e.sheet}>
+                  <span className="font-mono">{e.sheet}</span> — {e.message}
+                </li>
+              ))}
+            </ul>
+            <p className="mt-2 text-xs text-amber-800">
+              Comparison numbers for missing periods will read as zero.
+            </p>
+          </div>
+        )}
 
         <h2 className="mb-5 font-display text-2xl text-gray-900">Summary</h2>
 
