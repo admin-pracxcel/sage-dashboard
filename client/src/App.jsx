@@ -73,6 +73,25 @@ function ErrorState({ message, onRetry }) {
   );
 }
 
+// Layout helpers — defined at module scope so their identity is stable
+// across App re-renders (inline component defs would remount children,
+// which was closing the native date-picker popups).
+function LeftCell({ children, className = '' }) {
+  return (
+    <div className={`px-6 md:px-10 ${className}`}>
+      <div className="mx-auto max-w-6xl">{children}</div>
+    </div>
+  );
+}
+
+function RailCell({ children, className = '' }) {
+  return (
+    <div className={`hidden px-5 md:flex ${className}`}>
+      {children}
+    </div>
+  );
+}
+
 // Small helper — sum two day-of-period-indexed arrays.
 function mergeDailySeries(a, b) {
   const length = Math.max(a.length, b.length);
@@ -192,22 +211,6 @@ export default function App() {
   function openModal(title, type, leads) {
     setModal({ title, type, leads });
   }
-
-  // Shared left-cell content wrapper: centers content at max-w-6xl with horizontal padding
-  // dot-grid and bg-mesh removed — body #FAF9F7 provides the background
-  const LeftCell = ({ children, className = '' }) => (
-    <div className={`px-6 md:px-10 ${className}`}>
-      <div className="mx-auto max-w-6xl">{children}</div>
-    </div>
-  );
-
-  // Shared right-cell: transparent so the absolute gradient behind shows through.
-  // Uses md:flex so consumers can pass items-start / items-center via className.
-  const RailCell = ({ children, className = '' }) => (
-    <div className={`hidden px-5 md:flex ${className}`}>
-      {children}
-    </div>
-  );
 
   return (
     <>
