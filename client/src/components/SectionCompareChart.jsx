@@ -26,21 +26,22 @@ export default function SectionCompareChart({
     const arrow = delta > 0 ? '▲' : delta < 0 ? '▼' : '→';
     const sign = delta > 0 ? '+' : delta < 0 ? '−' : '';
     const deltaColor =
-      delta > 0 ? '#5EEAD4' : delta < 0 ? '#FCA5A5' : 'rgba(255,255,255,0.6)';
+      delta > 0 ? '#059669' : delta < 0 ? '#DC2626' : 'rgba(0,0,0,0.5)';
 
     return (
       <div
         style={{
-          background: 'rgba(19, 26, 21, 0.95)',
-          border: '1px solid rgba(255,255,255,0.15)',
+          background: '#FFFFFF',
+          border: '1px solid rgba(0,0,0,0.08)',
           borderRadius: 8,
           padding: '8px 10px',
           fontSize: 12,
-          color: '#FFFFFF',
+          color: '#111827',
           minWidth: 140,
+          boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
         }}
       >
-        <div style={{ color: 'rgba(255,255,255,0.6)', fontSize: 11, marginBottom: 4 }}>
+        <div style={{ color: 'rgba(0,0,0,0.5)', fontSize: 11, marginBottom: 4 }}>
           Day {label}
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12 }}>
@@ -72,11 +73,11 @@ export default function SectionCompareChart({
             interval="preserveStartEnd"
           />
           <Tooltip
-            cursor={{ stroke: 'rgba(255,255,255,0.25)', strokeWidth: 1 }}
+            cursor={{ stroke: 'rgba(0,0,0,0.15)', strokeWidth: 1 }}
             content={<TooltipContent />}
           />
           <Legend
-            wrapperStyle={{ fontSize: 11, color: 'rgba(255,255,255,0.8)' }}
+            wrapperStyle={{ fontSize: 11, color: '#4B5563' }}
             formatter={(name) => (name === 'main' ? mainLabel : compareLabel)}
             iconSize={8}
           />

@@ -215,7 +215,7 @@ export default function App() {
         {/* Right rail gradient — absolute, behind the rail column, spans full page height */}
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-y-0 right-0 hidden w-[450px] bg-gradient-to-b from-brand via-brand-dark to-brand-deep md:block"
+          className="pointer-events-none absolute inset-y-0 right-0 hidden w-[450px] border-l border-black/5 bg-[#F2F0EA] md:block"
         />
 
         {/* Page-level CSS Grid: two columns on md+, one column on mobile.
@@ -287,16 +287,16 @@ export default function App() {
           </LeftCell>
 
           <RailCell className="items-stretch pb-10">
-            <div className="flex h-full w-full flex-col rounded-xl bg-white/10 p-3">
-              <p className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-white/50">Summary</p>
+            <div className="flex h-full w-full flex-col rounded-xl border border-black/5 bg-white p-3 shadow-sm">
+              <p className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-gray-500">Summary</p>
               <div className="min-h-0 flex-1">
                 <SectionCompareChart
                   mainSeries={highlightsDaily.main}
                   compareSeries={highlightsDaily.compare}
                   mainLabel={mainLabel}
                   compareLabel={compareLabel}
-                  mainColor="#FFFFFF"
-                  compareColor="#D1D5DB"
+                  mainColor="#2e3e33"
+                  compareColor="#9CA3AF"
                 />
               </div>
             </div>
@@ -341,16 +341,16 @@ export default function App() {
           </LeftCell>
 
           <RailCell className="items-stretch pb-10 pt-6">
-            <div className="flex h-full w-full flex-col rounded-xl bg-white/10 p-3">
-              <p className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-white/50">SEO</p>
+            <div className="flex h-full w-full flex-col rounded-xl border border-black/5 bg-white p-3 shadow-sm">
+              <p className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-gray-500">SEO</p>
               <div className="min-h-0 flex-1">
                 <SectionCompareChart
                   mainSeries={seoDaily.main}
                   compareSeries={seoDaily.compare}
                   mainLabel={mainLabel}
                   compareLabel={compareLabel}
-                  mainColor="#FFFFFF"
-                  compareColor="#D1D5DB"
+                  mainColor="#2e3e33"
+                  compareColor="#9CA3AF"
                 />
               </div>
             </div>
@@ -392,16 +392,16 @@ export default function App() {
           </LeftCell>
 
           <RailCell className="items-stretch pb-10 pt-6">
-            <div className="flex h-full w-full flex-col rounded-xl bg-white/10 p-3">
-              <p className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-white/50">PPC</p>
+            <div className="flex h-full w-full flex-col rounded-xl border border-black/5 bg-white p-3 shadow-sm">
+              <p className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-gray-500">PPC</p>
               <div className="min-h-0 flex-1">
                 <SectionCompareChart
                   mainSeries={ppcDaily.main}
                   compareSeries={ppcDaily.compare}
                   mainLabel={mainLabel}
                   compareLabel={compareLabel}
-                  mainColor="#FFFFFF"
-                  compareColor="#D1D5DB"
+                  mainColor="#2e3e33"
+                  compareColor="#9CA3AF"
                 />
               </div>
             </div>
