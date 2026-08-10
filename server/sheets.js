@@ -1,6 +1,13 @@
 import { google } from 'googleapis';
 import { parse, isValid } from 'date-fns';
 
+// All sheet timestamps are Perth local time (AWST = UTC+8, no DST).
+// Build a true absolute-instant Date from Perth-local components.
+const PERTH_OFFSET_MS = 8 * 60 * 60 * 1000;
+function perthLocalToDate(year, month, day, hour = 0, minute = 0, second = 0) {
+  return new Date(Date.UTC(year, month, day, hour, minute, second) - PERTH_OFFSET_MS);
+}
+
 // ---------------------------------------------------------------------------
 // In-memory cache
 // ---------------------------------------------------------------------------
@@ -60,8 +67,9 @@ function normalizeBookAppointmentLead(row, headers) {
     return idx >= 0 ? (row[idx] ?? '') : '';
   };
 
+  // "2026-08-10 09:15:30" — Perth local time, no TZ suffix.
   const rawDate = get('Booked At');
-  const parsed = new Date(rawDate.replace(' ', 'T'));
+  const parsed = new Date(rawDate.replace(' ', 'T') + '+08:00');
   if (!isValid(parsed)) {
     console.warn('Dropping Book Appointment row — bad date:', rawDate);
     return null;
@@ -88,12 +96,20 @@ function normalizeContactLead(row, headers) {
   const rawCountry = get('Lead Country');
   const country = rawCountry && rawCountry !== '-' ? rawCountry : null;
 
+  // "April 15, 2026 at 3:15 PM" — parsed in server-local TZ, then reinterpreted as Perth.
   const rawDate = get('Lead Date');
-  const parsed = parse(rawDate, "MMMM d, yyyy 'at' h:mm a", new Date());
-  if (!isValid(parsed)) {
+  const local = parse(rawDate, "MMMM d, yyyy 'at' h:mm a", new Date());
+  if (!isValid(local)) {
     console.warn('Dropping Contact row — bad date:', rawDate);
     return null;
   }
+  const parsed = perthLocalToDate(
+    local.getFullYear(),
+    local.getMonth(),
+    local.getDate(),
+    local.getHours(),
+    local.getMinutes(),
+  );
 
   return {
     email: get('Email'),
@@ -116,9 +132,9 @@ function normalizeCallLead(row, headers) {
     return idx >= 0 ? (row[idx] ?? '') : '';
   };
 
-  // "2026-05-01 11:49:17"
+  // "2026-05-01 11:49:17" — Perth local time, no TZ suffix.
   const rawDateTime = get('Date & Time');
-  const parsed = new Date(rawDateTime.replace(' ', 'T'));
+  const parsed = new Date(rawDateTime.replace(' ', 'T') + '+08:00');
   if (!isValid(parsed)) {
     console.warn('Dropping call lead — bad date:', rawDateTime);
     return null;
