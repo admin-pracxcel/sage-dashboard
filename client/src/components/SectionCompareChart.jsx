@@ -12,11 +12,13 @@ export default function SectionCompareChart({
   const length = Math.min(mainSeries.length, compareSeries.length);
   if (length === 0) return null;
 
-  const data = Array.from({ length }, (_, i) => ({
-    day: i + 1,
-    main: mainSeries[i]?.count ?? 0,
-    compare: compareSeries[i]?.count ?? 0,
-  }));
+  let mainCum = 0;
+  let compareCum = 0;
+  const data = Array.from({ length }, (_, i) => {
+    mainCum += mainSeries[i]?.count ?? 0;
+    compareCum += compareSeries[i]?.count ?? 0;
+    return { day: i + 1, main: mainCum, compare: compareCum };
+  });
 
   return (
     <div className="h-full w-full">
@@ -41,7 +43,7 @@ export default function SectionCompareChart({
             }}
             labelStyle={{ color: 'rgba(255,255,255,0.6)', fontSize: 11, marginBottom: 4 }}
             itemStyle={{ color: '#FFFFFF' }}
-            labelFormatter={(day) => `Day ${day}`}
+            labelFormatter={(day) => `Through Day ${day}`}
             formatter={(value, name) => [value, name === 'main' ? mainLabel : compareLabel]}
           />
           <Legend
