@@ -269,26 +269,30 @@ export default function App() {
               totalNewPatients={mainCounts.totalNewPatients}
               missedOpportunities={mainCounts.missedOpportunities}
               onViewMissed={() => openModal('Missed Opportunities', 'calls', missedCalls)}
-              deltaChipNewPatients={
-                <DeltaChip
-                  current={mainCounts.totalNewPatients}
-                  previous={compareCounts.totalNewPatients}
-                  compareLabel={compareLabel}
-                />
-              }
-              deltaChipMissed={
-                <DeltaChip
-                  current={mainCounts.missedOpportunities}
-                  previous={compareCounts.missedOpportunities}
-                  compareLabel={compareLabel}
-                />
-              }
             />
           </LeftCell>
 
           <RailCell className="items-stretch pb-10">
             <div className="flex h-full w-full flex-col rounded-xl border border-black/5 bg-white p-3 shadow-sm">
-              <p className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-gray-500">Summary</p>
+              <p className="text-[10px] font-semibold uppercase tracking-wider text-gray-500">Summary</p>
+              <div className="mb-2 mt-1.5 space-y-1">
+                <div className="flex items-center justify-between gap-3 text-xs">
+                  <span className="text-gray-500">New Patients</span>
+                  <DeltaChip
+                    current={mainCounts.totalNewPatients}
+                    previous={compareCounts.totalNewPatients}
+                    hideCompareLabel
+                  />
+                </div>
+                <div className="flex items-center justify-between gap-3 text-xs">
+                  <span className="text-gray-500">Missed</span>
+                  <DeltaChip
+                    current={mainCounts.missedOpportunities}
+                    previous={compareCounts.missedOpportunities}
+                    hideCompareLabel
+                  />
+                </div>
+              </div>
               <div className="min-h-0 flex-1">
                 <SectionCompareChart
                   mainSeries={highlightsDaily.main}
@@ -322,27 +326,31 @@ export default function App() {
                 callsNewCount={mainCounts.seo.callsNew}
                 onViewWebsite={() => openModal('SEO — Website Leads', 'website', seoNewLeads.website)}
                 onViewCalls={() => openModal('SEO — Phone Calls', 'calls', seoNewLeads.calls)}
-                deltaChipWebsite={
-                  <DeltaChip
-                    current={mainCounts.seo.websiteNew}
-                    previous={compareCounts.seo.websiteNew}
-                    compareLabel={compareLabel}
-                  />
-                }
-                deltaChipCalls={
-                  <DeltaChip
-                    current={mainCounts.seo.callsNew}
-                    previous={compareCounts.seo.callsNew}
-                    compareLabel={compareLabel}
-                  />
-                }
               />
             </div>
           </LeftCell>
 
           <RailCell className="items-stretch pb-10 pt-6">
             <div className="flex h-full w-full flex-col rounded-xl border border-black/5 bg-white p-3 shadow-sm">
-              <p className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-gray-500">SEO</p>
+              <p className="text-[10px] font-semibold uppercase tracking-wider text-gray-500">SEO</p>
+              <div className="mb-2 mt-1.5 space-y-1">
+                <div className="flex items-center justify-between gap-3 text-xs">
+                  <span className="text-gray-500">Website</span>
+                  <DeltaChip
+                    current={mainCounts.seo.websiteNew}
+                    previous={compareCounts.seo.websiteNew}
+                    hideCompareLabel
+                  />
+                </div>
+                <div className="flex items-center justify-between gap-3 text-xs">
+                  <span className="text-gray-500">Phone</span>
+                  <DeltaChip
+                    current={mainCounts.seo.callsNew}
+                    previous={compareCounts.seo.callsNew}
+                    hideCompareLabel
+                  />
+                </div>
+              </div>
               <div className="min-h-0 flex-1">
                 <SectionCompareChart
                   mainSeries={seoDaily.main}
@@ -373,27 +381,31 @@ export default function App() {
                 callsNewCount={mainCounts.ppc.callsNew}
                 onViewWebsite={() => openModal('PPC — Website Leads', 'website', ppcNewLeads.website)}
                 onViewCalls={() => openModal('PPC — Phone Calls', 'calls', ppcNewLeads.calls)}
-                deltaChipWebsite={
-                  <DeltaChip
-                    current={mainCounts.ppc.websiteNew}
-                    previous={compareCounts.ppc.websiteNew}
-                    compareLabel={compareLabel}
-                  />
-                }
-                deltaChipCalls={
-                  <DeltaChip
-                    current={mainCounts.ppc.callsNew}
-                    previous={compareCounts.ppc.callsNew}
-                    compareLabel={compareLabel}
-                  />
-                }
               />
             </div>
           </LeftCell>
 
           <RailCell className="items-stretch pb-10 pt-6">
             <div className="flex h-full w-full flex-col rounded-xl border border-black/5 bg-white p-3 shadow-sm">
-              <p className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-gray-500">PPC</p>
+              <p className="text-[10px] font-semibold uppercase tracking-wider text-gray-500">PPC</p>
+              <div className="mb-2 mt-1.5 space-y-1">
+                <div className="flex items-center justify-between gap-3 text-xs">
+                  <span className="text-gray-500">Website</span>
+                  <DeltaChip
+                    current={mainCounts.ppc.websiteNew}
+                    previous={compareCounts.ppc.websiteNew}
+                    hideCompareLabel
+                  />
+                </div>
+                <div className="flex items-center justify-between gap-3 text-xs">
+                  <span className="text-gray-500">Phone</span>
+                  <DeltaChip
+                    current={mainCounts.ppc.callsNew}
+                    previous={compareCounts.ppc.callsNew}
+                    hideCompareLabel
+                  />
+                </div>
+              </div>
               <div className="min-h-0 flex-1">
                 <SectionCompareChart
                   mainSeries={ppcDaily.main}
