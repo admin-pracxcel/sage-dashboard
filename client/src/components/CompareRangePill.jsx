@@ -1,9 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import { formatCompareLabel } from '../lib/format';
+import { today, toDateString } from '../lib/dates';
 
 export default function CompareRangePill({ compareRange, onChange, onReset }) {
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
+  const maxDate = toDateString(today());
 
   useEffect(() => {
     if (!open) return;
@@ -50,6 +52,7 @@ export default function CompareRangePill({ compareRange, onChange, onReset }) {
               <input
                 type="date"
                 value={compareRange.from}
+                max={maxDate}
                 onChange={(e) => handleField('from', e.target.value)}
               />
             </label>
@@ -58,6 +61,7 @@ export default function CompareRangePill({ compareRange, onChange, onReset }) {
               <input
                 type="date"
                 value={compareRange.to}
+                max={maxDate}
                 onChange={(e) => handleField('to', e.target.value)}
               />
             </label>

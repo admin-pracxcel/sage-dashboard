@@ -1,6 +1,6 @@
-# Parabanks Dental — Leads Dashboard (May 2026)
+# Sage Psychological Services — Leads Dashboard
 
-A single-page dashboard for Parabanks Dental that pulls lead data live from
+A single-page dashboard for Sage Psychological Services that pulls lead data live from
 Google Sheets and surfaces three things at a glance: total new patients,
 missed phone opportunities, and a breakdown by channel (SEO vs Google Ads)
 and lead type (Website vs Phone Call).

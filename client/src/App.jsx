@@ -217,7 +217,7 @@ export default function App() {
             <ul className="mt-1 list-inside list-disc">
               {errors.map((e) => (
                 <li key={e.sheet}>
-                  <span className="font-mono">{e.sheet}</span> — {e.message}
+                  <span className="font-mono">{e.sheet.replace(/^(calls|website):/, '')}</span> — {e.message}
                 </li>
               ))}
             </ul>
