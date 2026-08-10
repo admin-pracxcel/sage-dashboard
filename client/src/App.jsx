@@ -194,43 +194,42 @@ export default function App() {
   }
 
   return (
-    <div className="dot-grid bg-mesh min-h-screen p-6 md:p-10">
-      <div className="mx-auto max-w-6xl">
-        <DashboardHeader
-          fetchedAt={fetchedAt}
-          isRefreshing={isRefreshing}
-          onRefresh={refresh}
-        />
-
-        <div className="mb-8">
-          <DateRangeFilter
-            dateRange={mainRange}
-            maxDate={maxDate}
-            onChange={setMainRange}
+    <div className="dot-grid bg-mesh min-h-screen flex">
+      <main className="flex-1 min-w-0 p-6 md:p-10">
+        <div className="mx-auto max-w-6xl">
+          <DashboardHeader
+            fetchedAt={fetchedAt}
+            isRefreshing={isRefreshing}
+            onRefresh={refresh}
           />
-        </div>
 
-        {errors && errors.length > 0 && (
-          <div className="mb-6 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
-            <p className="font-semibold">Some data could not be loaded:</p>
-            <ul className="mt-1 list-inside list-disc">
-              {errors.map((e) => (
-                <li key={e.sheet}>
-                  <span className="font-mono">{e.sheet.replace(/^(calls|website):/, '')}</span> — {e.message}
-                </li>
-              ))}
-            </ul>
-            <p className="mt-2 text-xs text-amber-800">
-              Comparison numbers for missing periods will read as zero.
-            </p>
+          <div className="mb-8">
+            <DateRangeFilter
+              dateRange={mainRange}
+              maxDate={maxDate}
+              onChange={setMainRange}
+            />
           </div>
-        )}
 
-        <h2 className="mb-5 font-display text-2xl text-gray-900">Summary</h2>
+          {errors && errors.length > 0 && (
+            <div className="mb-6 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
+              <p className="font-semibold">Some data could not be loaded:</p>
+              <ul className="mt-1 list-inside list-disc">
+                {errors.map((e) => (
+                  <li key={e.sheet}>
+                    <span className="font-mono">{e.sheet.replace(/^(calls|website):/, '')}</span> — {e.message}
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-2 text-xs text-amber-800">
+                Comparison numbers for missing periods will read as zero.
+              </p>
+            </div>
+          )}
 
-        <div className="grid gap-6 md:grid-cols-[minmax(0,1fr)_320px]">
-          {/* Row 1: Highlights */}
-          <div className="min-w-0">
+          <h2 className="mb-5 font-display text-2xl text-gray-900">Summary</h2>
+
+          <div className="space-y-10">
             <HighlightsSection
               totalNewPatients={mainCounts.totalNewPatients}
               missedOpportunities={mainCounts.missedOpportunities}
@@ -250,99 +249,106 @@ export default function App() {
                 />
               }
             />
-          </div>
-          <div className="flex flex-col gap-4">
-            <CompareSidePanel
-              compareRange={compareRange}
-              onChange={setCompareRange}
-              onReset={resetCompareRange}
-            />
-            <SectionCompareChart
-              mainSeries={highlightsDaily.main}
-              compareSeries={highlightsDaily.compare}
-              mainLabel={mainLabel}
-              compareLabel={compareLabel}
-              accentColor="#2e3e33"
-            />
+
+            <div className="animate-slide-up stagger-4 opacity-0">
+              <SourceSection
+                title="SEO"
+                subtitle="Google Searches, Google Business, AI Search"
+                websiteNewCount={mainCounts.seo.websiteNew}
+                callsNewCount={mainCounts.seo.callsNew}
+                onViewWebsite={() => openModal('SEO — Website Leads', 'website', seoNewLeads.website)}
+                onViewCalls={() => openModal('SEO — Phone Calls', 'calls', seoNewLeads.calls)}
+                deltaChipWebsite={
+                  <DeltaChip
+                    current={mainCounts.seo.websiteNew}
+                    previous={compareCounts.seo.websiteNew}
+                    compareLabel={compareLabel}
+                  />
+                }
+                deltaChipCalls={
+                  <DeltaChip
+                    current={mainCounts.seo.callsNew}
+                    previous={compareCounts.seo.callsNew}
+                    compareLabel={compareLabel}
+                  />
+                }
+              />
+            </div>
+
+            <div className="animate-slide-up stagger-5 opacity-0">
+              <SourceSection
+                title="PPC"
+                subtitle="Google Ads"
+                websiteNewCount={mainCounts.ppc.websiteNew}
+                callsNewCount={mainCounts.ppc.callsNew}
+                onViewWebsite={() => openModal('PPC — Website Leads', 'website', ppcNewLeads.website)}
+                onViewCalls={() => openModal('PPC — Phone Calls', 'calls', ppcNewLeads.calls)}
+                deltaChipWebsite={
+                  <DeltaChip
+                    current={mainCounts.ppc.websiteNew}
+                    previous={compareCounts.ppc.websiteNew}
+                    compareLabel={compareLabel}
+                  />
+                }
+                deltaChipCalls={
+                  <DeltaChip
+                    current={mainCounts.ppc.callsNew}
+                    previous={compareCounts.ppc.callsNew}
+                    compareLabel={compareLabel}
+                  />
+                }
+              />
+            </div>
           </div>
 
-          {/* Row 2: SEO */}
-          <div className="animate-slide-up stagger-4 opacity-0 min-w-0">
-            <SourceSection
-              title="SEO"
-              subtitle="Google Searches, Google Business, AI Search"
-              websiteNewCount={mainCounts.seo.websiteNew}
-              callsNewCount={mainCounts.seo.callsNew}
-              onViewWebsite={() => openModal('SEO — Website Leads', 'website', seoNewLeads.website)}
-              onViewCalls={() => openModal('SEO — Phone Calls', 'calls', seoNewLeads.calls)}
-              deltaChipWebsite={
-                <DeltaChip
-                  current={mainCounts.seo.websiteNew}
-                  previous={compareCounts.seo.websiteNew}
-                  compareLabel={compareLabel}
-                />
-              }
-              deltaChipCalls={
-                <DeltaChip
-                  current={mainCounts.seo.callsNew}
-                  previous={compareCounts.seo.callsNew}
-                  compareLabel={compareLabel}
-                />
-              }
-            />
-          </div>
-          <div className="min-w-0">
-            <SectionCompareChart
-              mainSeries={seoDaily.main}
-              compareSeries={seoDaily.compare}
-              mainLabel={mainLabel}
-              compareLabel={compareLabel}
-              accentColor="#0D9488"
-            />
-          </div>
-
-          {/* Row 3: PPC */}
-          <div className="animate-slide-up stagger-5 opacity-0 min-w-0">
-            <SourceSection
-              title="PPC"
-              subtitle="Google Ads"
-              websiteNewCount={mainCounts.ppc.websiteNew}
-              callsNewCount={mainCounts.ppc.callsNew}
-              onViewWebsite={() => openModal('PPC — Website Leads', 'website', ppcNewLeads.website)}
-              onViewCalls={() => openModal('PPC — Phone Calls', 'calls', ppcNewLeads.calls)}
-              deltaChipWebsite={
-                <DeltaChip
-                  current={mainCounts.ppc.websiteNew}
-                  previous={compareCounts.ppc.websiteNew}
-                  compareLabel={compareLabel}
-                />
-              }
-              deltaChipCalls={
-                <DeltaChip
-                  current={mainCounts.ppc.callsNew}
-                  previous={compareCounts.ppc.callsNew}
-                  compareLabel={compareLabel}
-                />
-              }
-            />
-          </div>
-          <div className="min-w-0">
-            <SectionCompareChart
-              mainSeries={ppcDaily.main}
-              compareSeries={ppcDaily.compare}
-              mainLabel={mainLabel}
-              compareLabel={compareLabel}
-              accentColor="#2e3e33"
-            />
+          <div className="mt-16 border-t border-surface-border pt-6">
+            <p className="text-center text-xs text-gray-300">
+              Sage Psychological Services — IntelliLens
+            </p>
           </div>
         </div>
+      </main>
 
-        <div className="mt-16 border-t border-surface-border pt-6">
-          <p className="text-center text-xs text-gray-300">
-            Sage Psychological Services — IntelliLens
-          </p>
+      <aside className="hidden md:flex md:sticky md:top-0 md:h-screen w-80 shrink-0 flex-col gap-4 overflow-y-auto border-l border-brand/20 bg-brand-light p-6">
+        <CompareSidePanel
+          compareRange={compareRange}
+          onChange={setCompareRange}
+          onReset={resetCompareRange}
+        />
+
+        <div>
+          <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-gray-500">Highlights</p>
+          <SectionCompareChart
+            mainSeries={highlightsDaily.main}
+            compareSeries={highlightsDaily.compare}
+            mainLabel={mainLabel}
+            compareLabel={compareLabel}
+            accentColor="#2e3e33"
+          />
         </div>
-      </div>
+
+        <div>
+          <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-gray-500">SEO</p>
+          <SectionCompareChart
+            mainSeries={seoDaily.main}
+            compareSeries={seoDaily.compare}
+            mainLabel={mainLabel}
+            compareLabel={compareLabel}
+            accentColor="#0D9488"
+          />
+        </div>
+
+        <div>
+          <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-gray-500">PPC</p>
+          <SectionCompareChart
+            mainSeries={ppcDaily.main}
+            compareSeries={ppcDaily.compare}
+            mainLabel={mainLabel}
+            compareLabel={compareLabel}
+            accentColor="#2e3e33"
+          />
+        </div>
+      </aside>
 
       {modal && (
         <LeadModal
