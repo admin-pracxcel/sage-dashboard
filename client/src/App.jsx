@@ -296,7 +296,7 @@ export default function App() {
                   mainLabel={mainLabel}
                   compareLabel={compareLabel}
                   mainColor="#FFFFFF"
-                  compareColor="#F59E0B"
+                  compareColor="#5EEAD4"
                 />
               </div>
             </div>
@@ -350,7 +350,7 @@ export default function App() {
                   mainLabel={mainLabel}
                   compareLabel={compareLabel}
                   mainColor="#FFFFFF"
-                  compareColor="#F59E0B"
+                  compareColor="#5EEAD4"
                 />
               </div>
             </div>
@@ -401,7 +401,7 @@ export default function App() {
                   mainLabel={mainLabel}
                   compareLabel={compareLabel}
                   mainColor="#FFFFFF"
-                  compareColor="#F59E0B"
+                  compareColor="#5EEAD4"
                 />
               </div>
             </div>
