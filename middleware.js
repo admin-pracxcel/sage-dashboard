@@ -5,9 +5,14 @@ export default function middleware(request) {
     const [scheme, encoded] = authHeader.split(' ');
     if (scheme === 'Basic' && encoded) {
       const decoded = atob(encoded);
-      const [user, pass] = decoded.split(':');
-      if (user === process.env.AUTH_USER && pass === process.env.AUTH_PASS) {
-        return;
+      // Split on FIRST ':' only — passwords can contain colons.
+      const idx = decoded.indexOf(':');
+      if (idx !== -1) {
+        const user = decoded.substring(0, idx);
+        const pass = decoded.substring(idx + 1);
+        if (user === process.env.AUTH_USER && pass === process.env.AUTH_PASS) {
+          return;
+        }
       }
     }
   }
