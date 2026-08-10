@@ -1,13 +1,32 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { formatCompareLabel } from '../lib/format';
 import { today, toDateString } from '../lib/dates';
+
+const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
 
 export default function CompareSidePanel({ compareRange, onChange, onReset }) {
   const [expanded, setExpanded] = useState(false);
   const maxDate = toDateString(today());
+  const fromRef = useRef(null);
+  const toRef = useRef(null);
+
+  // Sync external value changes into input DOM only when NOT focused —
+  // keeps the native date picker popup from being reset mid-interaction.
+  useEffect(() => {
+    if (fromRef.current && document.activeElement !== fromRef.current) {
+      fromRef.current.value = compareRange.from;
+    }
+  }, [compareRange.from]);
+  useEffect(() => {
+    if (toRef.current && document.activeElement !== toRef.current) {
+      toRef.current.value = compareRange.to;
+    }
+  }, [compareRange.to]);
 
   function handleField(field, value) {
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return;
+    if (!ISO_DATE.test(value)) return;
+    if (field === 'from' && value === compareRange.from) return;
+    if (field === 'to' && value === compareRange.to) return;
     let from = field === 'from' ? value : compareRange.from;
     let to = field === 'to' ? value : compareRange.to;
     if (to < from) [from, to] = [to, from];
@@ -44,20 +63,22 @@ export default function CompareSidePanel({ compareRange, onChange, onReset }) {
           <label className="flex items-center justify-between gap-2 text-xs text-gray-600">
             From
             <input
+              ref={fromRef}
               type="date"
-              value={compareRange.from}
-              onChange={(e) => handleField('from', e.target.value)}
+              defaultValue={compareRange.from}
               max={maxDate}
+              onChange={(e) => handleField('from', e.target.value)}
               className="rounded-md border border-black/10 bg-white px-2 py-1 text-xs text-gray-900"
             />
           </label>
           <label className="flex items-center justify-between gap-2 text-xs text-gray-600">
             To
             <input
+              ref={toRef}
               type="date"
-              value={compareRange.to}
-              onChange={(e) => handleField('to', e.target.value)}
+              defaultValue={compareRange.to}
               max={maxDate}
+              onChange={(e) => handleField('to', e.target.value)}
               className="rounded-md border border-black/10 bg-white px-2 py-1 text-xs text-gray-900"
             />
           </label>

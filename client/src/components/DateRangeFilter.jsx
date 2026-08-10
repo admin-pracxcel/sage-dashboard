@@ -1,11 +1,30 @@
+import { useEffect, useRef } from 'react';
 import { toDateString } from '../lib/dates';
+
+const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
 
 export default function DateRangeFilter({ dateRange, maxDate, onChange }) {
   const maxStr = toDateString(maxDate);
+  const fromRef = useRef(null);
+  const toRef = useRef(null);
+
+  // Sync external value changes into the input DOM only when NOT focused,
+  // so the native date picker popup is never yanked out from under the user.
+  useEffect(() => {
+    if (fromRef.current && document.activeElement !== fromRef.current) {
+      fromRef.current.value = dateRange.from;
+    }
+  }, [dateRange.from]);
+  useEffect(() => {
+    if (toRef.current && document.activeElement !== toRef.current) {
+      toRef.current.value = dateRange.to;
+    }
+  }, [dateRange.to]);
 
   function handleChange(field, value) {
-    // Ignore partial/invalid values fired mid-edit by the native date input.
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return;
+    if (!ISO_DATE.test(value)) return;
+    if (field === 'from' && value === dateRange.from) return;
+    if (field === 'to' && value === dateRange.to) return;
     let from = field === 'from' ? value : dateRange.from;
     let to = field === 'to' ? value : dateRange.to;
     if (to < from) [from, to] = [to, from];
@@ -23,8 +42,9 @@ export default function DateRangeFilter({ dateRange, maxDate, onChange }) {
       <label className="flex items-center gap-2 text-sm text-gray-500">
         From
         <input
+          ref={fromRef}
           type="date"
-          value={dateRange.from}
+          defaultValue={dateRange.from}
           max={maxStr}
           onChange={(e) => handleChange('from', e.target.value)}
         />
@@ -33,8 +53,9 @@ export default function DateRangeFilter({ dateRange, maxDate, onChange }) {
       <label className="flex items-center gap-2 text-sm text-gray-500">
         To
         <input
+          ref={toRef}
           type="date"
-          value={dateRange.to}
+          defaultValue={dateRange.to}
           max={maxStr}
           onChange={(e) => handleChange('to', e.target.value)}
         />
