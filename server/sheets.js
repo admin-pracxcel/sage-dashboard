@@ -119,29 +119,36 @@ export async function fetchLeadsFromSheets({ fresh = false } = {}) {
   let website = [];
   let calls = [];
 
+  const websiteTabs = (process.env.GOOGLE_WEBSITE_TAB || 'Book Appointment')
+    .split(',')
+    .map((t) => t.trim());
+
   const callsTabs = (process.env.GOOGLE_CALLS_TAB || 'Calls - May 2026')
     .split(',')
     .map((t) => t.trim());
 
   const allFetches = [
-    fetchSheet(
-      auth,
-      process.env.GOOGLE_WEBSITE_SHEET_ID,
-      process.env.GOOGLE_WEBSITE_TAB || 'Book Appointment',
+    ...websiteTabs.map((tab) =>
+      fetchSheet(auth, process.env.GOOGLE_WEBSITE_SHEET_ID, tab),
     ),
     ...callsTabs.map((tab) =>
       fetchSheet(auth, process.env.GOOGLE_CALLS_SHEET_ID, tab),
     ),
   ];
 
-  const [websiteResult, ...callsResults] = await Promise.allSettled(allFetches);
+  const results = await Promise.allSettled(allFetches);
+  const websiteResults = results.slice(0, websiteTabs.length);
+  const callsResults = results.slice(websiteTabs.length);
 
-  if (websiteResult.status === 'fulfilled' && websiteResult.value.length > 0) {
-    const [headers, ...rows] = websiteResult.value;
-    website = rows.map((r) => normalizeWebsiteLead(r, headers)).filter(Boolean);
-  } else if (websiteResult.status === 'rejected') {
-    console.error('Website sheet error:', websiteResult.reason.message);
-    errors.push({ sheet: 'website', message: websiteResult.reason.message });
+  for (let i = 0; i < websiteResults.length; i++) {
+    const result = websiteResults[i];
+    if (result.status === 'fulfilled' && result.value.length > 0) {
+      const [headers, ...rows] = result.value;
+      website.push(...rows.map((r) => normalizeWebsiteLead(r, headers)).filter(Boolean));
+    } else if (result.status === 'rejected') {
+      console.error(`Website sheet error (${websiteTabs[i]}):`, result.reason.message);
+      errors.push({ sheet: `website:${websiteTabs[i]}`, message: result.reason.message });
+    }
   }
 
   for (let i = 0; i < callsResults.length; i++) {
