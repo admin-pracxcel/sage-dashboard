@@ -276,7 +276,7 @@ export default function App() {
             <div className="flex h-full w-full flex-col rounded-xl border border-black/5 bg-white p-3 shadow-sm">
               <p className="text-[10px] font-semibold uppercase tracking-wider text-gray-500">Summary</p>
               <div className="mb-2 mt-1.5 space-y-1">
-                <div className="flex items-center justify-between gap-3 text-xs">
+                <div className="flex items-baseline gap-2 text-xs">
                   <span className="text-gray-500">New Patients</span>
                   <DeltaChip
                     current={mainCounts.totalNewPatients}
@@ -284,7 +284,7 @@ export default function App() {
                     hideCompareLabel
                   />
                 </div>
-                <div className="flex items-center justify-between gap-3 text-xs">
+                <div className="flex items-baseline gap-2 text-xs">
                   <span className="text-gray-500">Missed</span>
                   <DeltaChip
                     current={mainCounts.missedOpportunities}
@@ -334,7 +334,7 @@ export default function App() {
             <div className="flex h-full w-full flex-col rounded-xl border border-black/5 bg-white p-3 shadow-sm">
               <p className="text-[10px] font-semibold uppercase tracking-wider text-gray-500">SEO</p>
               <div className="mb-2 mt-1.5 space-y-1">
-                <div className="flex items-center justify-between gap-3 text-xs">
+                <div className="flex items-baseline gap-2 text-xs">
                   <span className="text-gray-500">Website</span>
                   <DeltaChip
                     current={mainCounts.seo.websiteNew}
@@ -342,7 +342,7 @@ export default function App() {
                     hideCompareLabel
                   />
                 </div>
-                <div className="flex items-center justify-between gap-3 text-xs">
+                <div className="flex items-baseline gap-2 text-xs">
                   <span className="text-gray-500">Phone</span>
                   <DeltaChip
                     current={mainCounts.seo.callsNew}
@@ -389,7 +389,7 @@ export default function App() {
             <div className="flex h-full w-full flex-col rounded-xl border border-black/5 bg-white p-3 shadow-sm">
               <p className="text-[10px] font-semibold uppercase tracking-wider text-gray-500">PPC</p>
               <div className="mb-2 mt-1.5 space-y-1">
-                <div className="flex items-center justify-between gap-3 text-xs">
+                <div className="flex items-baseline gap-2 text-xs">
                   <span className="text-gray-500">Website</span>
                   <DeltaChip
                     current={mainCounts.ppc.websiteNew}
@@ -397,7 +397,7 @@ export default function App() {
                     hideCompareLabel
                   />
                 </div>
-                <div className="flex items-center justify-between gap-3 text-xs">
+                <div className="flex items-baseline gap-2 text-xs">
                   <span className="text-gray-500">Phone</span>
                   <DeltaChip
                     current={mainCounts.ppc.callsNew}
