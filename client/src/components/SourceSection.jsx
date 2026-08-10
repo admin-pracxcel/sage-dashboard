@@ -1,9 +1,11 @@
 import ChannelCard from './ChannelCard';
+import SectionCompareChart from './SectionCompareChart';
 
 const config = {
   SEO: {
     accent: 'text-[#2e3e33]',
     underline: 'bg-accent-teal',
+    accentHex: '#0D9488',
     tagBg: 'bg-accent-teal-light text-accent-teal-dark',
     websiteIcon: '🌐',
     callIcon: '📞',
@@ -11,6 +13,7 @@ const config = {
   PPC: {
     accent: 'text-[#2e3e33]',
     underline: 'bg-brand',
+    accentHex: '#2e3e33',
     tagBg: 'bg-brand-light text-brand-dark',
     websiteIcon: '🎯',
     callIcon: '📱',
@@ -24,6 +27,12 @@ export default function SourceSection({
   callsNewCount,
   onViewWebsite,
   onViewCalls,
+  mainSeries,
+  compareSeries,
+  mainLabel,
+  compareLabel,
+  deltaChipWebsite,
+  deltaChipCalls,
 }) {
   const c = config[title] || config.SEO;
 
@@ -40,6 +49,13 @@ export default function SourceSection({
         </div>
         <div className={`mt-3 h-0.5 w-16 rounded-full ${c.underline}`} />
       </div>
+      <SectionCompareChart
+        mainSeries={mainSeries}
+        compareSeries={compareSeries}
+        mainLabel={mainLabel}
+        compareLabel={compareLabel}
+        accentColor={c.accentHex}
+      />
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <ChannelCard
           label="Website"
@@ -48,6 +64,7 @@ export default function SourceSection({
           buttonLabel="View leads"
           onButtonClick={onViewWebsite}
           accentClass={c.accent}
+          deltaChip={deltaChipWebsite}
         />
         <ChannelCard
           label="Phone Call"
@@ -56,6 +73,7 @@ export default function SourceSection({
           buttonLabel="View calls"
           onButtonClick={onViewCalls}
           accentClass={c.accent}
+          deltaChip={deltaChipCalls}
         />
       </div>
     </section>
