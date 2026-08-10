@@ -57,3 +57,26 @@ export function filterMissedOpportunities({ calls }) {
     calls: calls.filter((r) => r.tag === 'Missed Opportunity'),
   };
 }
+
+import { daysBetween, daysInRange, fromDateString } from './dates';
+
+/**
+ * Bucket `rows` into daily counts indexed by day-of-period.
+ * Returns an array of length daysInRange(range) with { day, count } entries (day is 1-indexed).
+ * Rows whose date falls outside `range` are ignored.
+ */
+export function dailyCountsByDay(rows, dateField, range) {
+  const length = daysInRange(range);
+  const start = fromDateString(range.from);
+  const buckets = Array.from({ length }, (_, i) => ({ day: i + 1, count: 0 }));
+
+  for (const row of rows) {
+    const rowDate = new Date(row[dateField]);
+    const offset = daysBetween(start, rowDate);
+    if (offset >= 0 && offset < length) {
+      buckets[offset].count += 1;
+    }
+  }
+
+  return buckets;
+}

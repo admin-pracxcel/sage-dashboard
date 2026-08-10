@@ -26,3 +26,31 @@ export function formatPhone(raw) {
 export function formatTimestamp(iso) {
   return format(new Date(iso), 'd MMM yyyy, h:mm:ss a');
 }
+
+import { fromDateString } from './dates';
+
+/**
+ * Smart label for a { from, to } range.
+ * - Full calendar month (from='YYYY-MM-01', to=last day of same month) → "Jul"
+ * - Same month, partial → "Jul 25 – Jul 31"
+ * - Different months → "Jul 25 – Aug 3"
+ */
+function formatRangeLabel(range) {
+  const from = fromDateString(range.from);
+  const to = fromDateString(range.to);
+  const sameMonth = from.getFullYear() === to.getFullYear() && from.getMonth() === to.getMonth();
+  const lastDayOfMonth = new Date(from.getFullYear(), from.getMonth() + 1, 0).getDate();
+  const isFullMonth = sameMonth && from.getDate() === 1 && to.getDate() === lastDayOfMonth;
+
+  if (isFullMonth) return format(from, 'MMM');
+  if (sameMonth) return `${format(from, 'MMM d')} – ${format(to, 'MMM d')}`;
+  return `${format(from, 'MMM d')} – ${format(to, 'MMM d')}`;
+}
+
+export function formatCompareLabel(range) {
+  return formatRangeLabel(range);
+}
+
+export function formatMainLabel(range) {
+  return formatRangeLabel(range);
+}
