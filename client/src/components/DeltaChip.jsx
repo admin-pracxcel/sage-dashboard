@@ -1,4 +1,4 @@
-export default function DeltaChip({ current, previous, invert = false, compareLabel }) {
+export default function DeltaChip({ current, previous, compareLabel }) {
   // Both zero — muted placeholder.
   if (previous === 0 && current === 0) {
     return (
@@ -6,12 +6,11 @@ export default function DeltaChip({ current, previous, invert = false, compareLa
     );
   }
 
-  // No prior data but current has something — "new".
+  // No prior data but current has something — direction-only, no "(new)" label.
   if (previous === 0 && current > 0) {
-    const tone = invert ? 'text-accent-rose' : 'text-brand';
     return (
-      <p className={`mt-2 text-xs font-medium ${tone}`}>
-        ↑ {current} (new) vs {compareLabel}
+      <p className="mt-2 text-xs font-medium text-brand">
+        ↑ {current} vs {compareLabel}
       </p>
     );
   }
@@ -25,10 +24,7 @@ export default function DeltaChip({ current, previous, invert = false, compareLa
 
   let tone;
   if (delta === 0) tone = 'text-gray-400';
-  else {
-    const isGood = invert ? delta < 0 : delta > 0;
-    tone = isGood ? 'text-brand' : 'text-accent-rose';
-  }
+  else tone = delta > 0 ? 'text-brand' : 'text-accent-rose';
 
   return (
     <p className={`mt-2 text-xs font-medium ${tone}`}>

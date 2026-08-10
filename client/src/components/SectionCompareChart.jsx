@@ -1,4 +1,4 @@
-import { LineChart, Line, XAxis, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 
 export default function SectionCompareChart({
   mainSeries,
@@ -7,7 +7,7 @@ export default function SectionCompareChart({
   compareLabel,
   accentColor,
 }) {
-  // Truncate to overlap length so both lines cover the same x-range.
+  // Truncate to overlap length so both bars cover the same x-range.
   const length = Math.min(mainSeries.length, compareSeries.length);
   if (length === 0) return null;
 
@@ -18,9 +18,9 @@ export default function SectionCompareChart({
   }));
 
   return (
-    <div className="mb-5 h-32 w-full rounded-xl border border-surface-border bg-surface-card p-3">
+    <div className="mb-5 h-40 w-full rounded-xl border border-surface-border bg-surface-card p-3">
       <ResponsiveContainer width="100%" height="100%">
-        <LineChart data={data} margin={{ top: 8, right: 12, left: 4, bottom: 4 }}>
+        <BarChart data={data} margin={{ top: 8, right: 12, left: 4, bottom: 4 }}>
           <XAxis
             dataKey="day"
             tick={{ fontSize: 10, fill: '#9CA3AF' }}
@@ -43,24 +43,21 @@ export default function SectionCompareChart({
             formatter={(name) => (name === 'main' ? mainLabel : compareLabel)}
             iconSize={8}
           />
-          <Line
-            type="monotone"
-            dataKey="compare"
-            stroke={accentColor}
-            strokeOpacity={0.25}
-            strokeWidth={2}
-            dot={false}
-            isAnimationActive={false}
-          />
-          <Line
-            type="monotone"
+          <Bar
             dataKey="main"
-            stroke={accentColor}
-            strokeWidth={2}
-            dot={false}
+            fill={accentColor}
+            fillOpacity={1}
+            radius={[2, 2, 0, 0]}
             isAnimationActive={false}
           />
-        </LineChart>
+          <Bar
+            dataKey="compare"
+            fill={accentColor}
+            fillOpacity={0.3}
+            radius={[2, 2, 0, 0]}
+            isAnimationActive={false}
+          />
+        </BarChart>
       </ResponsiveContainer>
     </div>
   );

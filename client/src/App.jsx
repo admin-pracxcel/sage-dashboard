@@ -248,7 +248,6 @@ export default function App() {
             <DeltaChip
               current={mainCounts.missedOpportunities}
               previous={compareCounts.missedOpportunities}
-              invert
               compareLabel={compareLabel}
             />
           }
