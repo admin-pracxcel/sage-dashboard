@@ -27,19 +27,7 @@ export function BookAppointmentLeadRow({ lead, index }) {
       className="border-b border-surface-border/60 transition-colors hover:bg-surface-raised/50"
       style={{ animationDelay: `${index * 20}ms` }}
     >
-      <td className="py-3 pr-4 text-sm text-gray-700">
-        {lead.sessionSource || <span className="text-gray-300">—</span>}
-      </td>
-      <td className="py-3 pr-4">
-        {lead.sessionMedium ? (
-          <span className="inline-flex rounded bg-surface-raised px-2 py-0.5 text-xs font-medium text-gray-500">
-            {lead.sessionMedium}
-          </span>
-        ) : (
-          <span className="text-xs text-gray-300">—</span>
-        )}
-      </td>
-      <td className="py-3 text-sm text-gray-400">{formatDate(lead.leadDate)}</td>
+      <td className="py-3 text-sm text-gray-700">{formatDateTime(lead.leadDate)}</td>
     </tr>
   );
 }

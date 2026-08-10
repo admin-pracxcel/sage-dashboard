@@ -32,9 +32,7 @@ function AppointmentTable({ leads }) {
     <table className="w-full text-left">
       <thead>
         <tr className="border-b border-surface-border">
-          <th className="pb-3 text-[11px] font-semibold uppercase tracking-wider text-gray-400">Session Source</th>
-          <th className="pb-3 text-[11px] font-semibold uppercase tracking-wider text-gray-400">Medium</th>
-          <th className="pb-3 text-[11px] font-semibold uppercase tracking-wider text-gray-400">Date</th>
+          <th className="pb-3 text-[11px] font-semibold uppercase tracking-wider text-gray-400">Booked At</th>
         </tr>
       </thead>
       <tbody>
