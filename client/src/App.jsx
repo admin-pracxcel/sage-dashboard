@@ -193,16 +193,33 @@ export default function App() {
     setModal({ title, type, leads });
   }
 
+  // Shared left-cell content wrapper: centers content at max-w-6xl with horizontal padding
+  const LeftCell = ({ children, className = '' }) => (
+    <div className={`dot-grid bg-mesh px-6 md:px-10 ${className}`}>
+      <div className="mx-auto max-w-6xl">{children}</div>
+    </div>
+  );
+
+  // Shared right-cell: dark rail background with horizontal padding
+  const RailCell = ({ children, className = '' }) => (
+    <div className={`hidden bg-brand px-5 md:block ${className}`}>
+      {children}
+    </div>
+  );
+
   return (
-    <div className="dot-grid bg-mesh min-h-screen flex">
-      <main className="flex-1 min-w-0 p-6 md:p-10">
-        <div className="mx-auto max-w-6xl">
+    <>
+      {/* Page-level CSS Grid: two columns on md+, one column on mobile.
+          gap-0 so right-column cells touch to form one continuous dark rail. */}
+      <div className="md:grid md:grid-cols-[minmax(0,1fr)_280px]">
+
+        {/* ── Row 1: Header + DateRangeFilter + banner + Summary heading / "Compared With" ── */}
+        <LeftCell className="pt-6 md:pt-10 pb-5">
           <DashboardHeader
             fetchedAt={fetchedAt}
             isRefreshing={isRefreshing}
             onRefresh={refresh}
           />
-
           <div className="mb-8">
             <DateRangeFilter
               dateRange={mainRange}
@@ -210,7 +227,6 @@ export default function App() {
               onChange={setMainRange}
             />
           </div>
-
           {errors && errors.length > 0 && (
             <div className="mb-6 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
               <p className="font-semibold">Some data could not be loaded:</p>
@@ -226,129 +242,147 @@ export default function App() {
               </p>
             </div>
           )}
-
           <h2 className="mb-5 font-display text-2xl text-gray-900">Summary</h2>
+        </LeftCell>
 
-          <div className="space-y-10">
-            <HighlightsSection
-              totalNewPatients={mainCounts.totalNewPatients}
-              missedOpportunities={mainCounts.missedOpportunities}
-              onViewMissed={() => openModal('Missed Opportunities', 'calls', missedCalls)}
-              deltaChipNewPatients={
+        {/* Right row 1: "Compared With" compact block */}
+        <RailCell className="pt-6 md:pt-10 pb-5">
+          <CompareSidePanel
+            compareRange={compareRange}
+            onChange={setCompareRange}
+            onReset={resetCompareRange}
+          />
+        </RailCell>
+
+        {/* ── Row 2: Highlights section / Highlights chart card ── */}
+        <LeftCell className="pb-10">
+          <HighlightsSection
+            totalNewPatients={mainCounts.totalNewPatients}
+            missedOpportunities={mainCounts.missedOpportunities}
+            onViewMissed={() => openModal('Missed Opportunities', 'calls', missedCalls)}
+            deltaChipNewPatients={
+              <DeltaChip
+                current={mainCounts.totalNewPatients}
+                previous={compareCounts.totalNewPatients}
+                compareLabel={compareLabel}
+              />
+            }
+            deltaChipMissed={
+              <DeltaChip
+                current={mainCounts.missedOpportunities}
+                previous={compareCounts.missedOpportunities}
+                compareLabel={compareLabel}
+              />
+            }
+          />
+        </LeftCell>
+
+        <RailCell className="flex items-start pt-2 pb-10">
+          <div className="w-full rounded-xl bg-white/10 p-3">
+            <p className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-white/50">Highlights</p>
+            <SectionCompareChart
+              mainSeries={highlightsDaily.main}
+              compareSeries={highlightsDaily.compare}
+              mainLabel={mainLabel}
+              compareLabel={compareLabel}
+              accentColor="#FFFFFF"
+            />
+          </div>
+        </RailCell>
+
+        {/* ── Row 3: SEO section / SEO chart card ── */}
+        <LeftCell className="pb-10">
+          <div className="animate-slide-up stagger-4 opacity-0">
+            <SourceSection
+              title="SEO"
+              subtitle="Google Searches, Google Business, AI Search"
+              websiteNewCount={mainCounts.seo.websiteNew}
+              callsNewCount={mainCounts.seo.callsNew}
+              onViewWebsite={() => openModal('SEO — Website Leads', 'website', seoNewLeads.website)}
+              onViewCalls={() => openModal('SEO — Phone Calls', 'calls', seoNewLeads.calls)}
+              deltaChipWebsite={
                 <DeltaChip
-                  current={mainCounts.totalNewPatients}
-                  previous={compareCounts.totalNewPatients}
+                  current={mainCounts.seo.websiteNew}
+                  previous={compareCounts.seo.websiteNew}
                   compareLabel={compareLabel}
                 />
               }
-              deltaChipMissed={
+              deltaChipCalls={
                 <DeltaChip
-                  current={mainCounts.missedOpportunities}
-                  previous={compareCounts.missedOpportunities}
+                  current={mainCounts.seo.callsNew}
+                  previous={compareCounts.seo.callsNew}
                   compareLabel={compareLabel}
                 />
               }
             />
-
-            <div className="animate-slide-up stagger-4 opacity-0">
-              <SourceSection
-                title="SEO"
-                subtitle="Google Searches, Google Business, AI Search"
-                websiteNewCount={mainCounts.seo.websiteNew}
-                callsNewCount={mainCounts.seo.callsNew}
-                onViewWebsite={() => openModal('SEO — Website Leads', 'website', seoNewLeads.website)}
-                onViewCalls={() => openModal('SEO — Phone Calls', 'calls', seoNewLeads.calls)}
-                deltaChipWebsite={
-                  <DeltaChip
-                    current={mainCounts.seo.websiteNew}
-                    previous={compareCounts.seo.websiteNew}
-                    compareLabel={compareLabel}
-                  />
-                }
-                deltaChipCalls={
-                  <DeltaChip
-                    current={mainCounts.seo.callsNew}
-                    previous={compareCounts.seo.callsNew}
-                    compareLabel={compareLabel}
-                  />
-                }
-              />
-            </div>
-
-            <div className="animate-slide-up stagger-5 opacity-0">
-              <SourceSection
-                title="PPC"
-                subtitle="Google Ads"
-                websiteNewCount={mainCounts.ppc.websiteNew}
-                callsNewCount={mainCounts.ppc.callsNew}
-                onViewWebsite={() => openModal('PPC — Website Leads', 'website', ppcNewLeads.website)}
-                onViewCalls={() => openModal('PPC — Phone Calls', 'calls', ppcNewLeads.calls)}
-                deltaChipWebsite={
-                  <DeltaChip
-                    current={mainCounts.ppc.websiteNew}
-                    previous={compareCounts.ppc.websiteNew}
-                    compareLabel={compareLabel}
-                  />
-                }
-                deltaChipCalls={
-                  <DeltaChip
-                    current={mainCounts.ppc.callsNew}
-                    previous={compareCounts.ppc.callsNew}
-                    compareLabel={compareLabel}
-                  />
-                }
-              />
-            </div>
           </div>
+        </LeftCell>
 
-          <div className="mt-16 border-t border-surface-border pt-6">
+        <RailCell className="flex items-start pt-2 pb-10">
+          <div className="w-full rounded-xl bg-white/10 p-3">
+            <p className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-white/50">SEO</p>
+            <SectionCompareChart
+              mainSeries={seoDaily.main}
+              compareSeries={seoDaily.compare}
+              mainLabel={mainLabel}
+              compareLabel={compareLabel}
+              accentColor="#FFFFFF"
+            />
+          </div>
+        </RailCell>
+
+        {/* ── Row 4: PPC section / PPC chart card ── */}
+        <LeftCell className="pb-10">
+          <div className="animate-slide-up stagger-5 opacity-0">
+            <SourceSection
+              title="PPC"
+              subtitle="Google Ads"
+              websiteNewCount={mainCounts.ppc.websiteNew}
+              callsNewCount={mainCounts.ppc.callsNew}
+              onViewWebsite={() => openModal('PPC — Website Leads', 'website', ppcNewLeads.website)}
+              onViewCalls={() => openModal('PPC — Phone Calls', 'calls', ppcNewLeads.calls)}
+              deltaChipWebsite={
+                <DeltaChip
+                  current={mainCounts.ppc.websiteNew}
+                  previous={compareCounts.ppc.websiteNew}
+                  compareLabel={compareLabel}
+                />
+              }
+              deltaChipCalls={
+                <DeltaChip
+                  current={mainCounts.ppc.callsNew}
+                  previous={compareCounts.ppc.callsNew}
+                  compareLabel={compareLabel}
+                />
+              }
+            />
+          </div>
+        </LeftCell>
+
+        <RailCell className="flex items-start pt-2 pb-10">
+          <div className="w-full rounded-xl bg-white/10 p-3">
+            <p className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-white/50">PPC</p>
+            <SectionCompareChart
+              mainSeries={ppcDaily.main}
+              compareSeries={ppcDaily.compare}
+              mainLabel={mainLabel}
+              compareLabel={compareLabel}
+              accentColor="#FFFFFF"
+            />
+          </div>
+        </RailCell>
+
+        {/* ── Row 5: Footer / empty rail cell ── */}
+        <LeftCell className="pb-6">
+          <div className="border-t border-surface-border pt-6">
             <p className="text-center text-xs text-gray-300">
               Sage Psychological Services — IntelliLens
             </p>
           </div>
-        </div>
-      </main>
+        </LeftCell>
 
-      <aside className="hidden md:flex md:sticky md:top-0 md:h-screen w-80 shrink-0 flex-col gap-4 overflow-y-auto border-l border-brand/20 bg-brand-light p-6">
-        <CompareSidePanel
-          compareRange={compareRange}
-          onChange={setCompareRange}
-          onReset={resetCompareRange}
-        />
-
-        <div>
-          <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-gray-500">Highlights</p>
-          <SectionCompareChart
-            mainSeries={highlightsDaily.main}
-            compareSeries={highlightsDaily.compare}
-            mainLabel={mainLabel}
-            compareLabel={compareLabel}
-            accentColor="#2e3e33"
-          />
-        </div>
-
-        <div>
-          <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-gray-500">SEO</p>
-          <SectionCompareChart
-            mainSeries={seoDaily.main}
-            compareSeries={seoDaily.compare}
-            mainLabel={mainLabel}
-            compareLabel={compareLabel}
-            accentColor="#0D9488"
-          />
-        </div>
-
-        <div>
-          <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-gray-500">PPC</p>
-          <SectionCompareChart
-            mainSeries={ppcDaily.main}
-            compareSeries={ppcDaily.compare}
-            mainLabel={mainLabel}
-            compareLabel={compareLabel}
-            accentColor="#2e3e33"
-          />
-        </div>
-      </aside>
+        <RailCell />
+      </div>
 
       {modal && (
         <LeadModal
@@ -358,6 +392,6 @@ export default function App() {
           onClose={() => setModal(null)}
         />
       )}
-    </div>
+    </>
   );
 }
