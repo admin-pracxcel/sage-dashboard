@@ -13,6 +13,8 @@ import DashboardHeader from './components/DashboardHeader';
 import DateRangeFilter from './components/DateRangeFilter';
 import HighlightsSection from './components/HighlightsSection';
 import SourceSection from './components/SourceSection';
+import SectionCompareChart from './components/SectionCompareChart';
+import CompareSidePanel from './components/CompareSidePanel';
 import LeadModal from './components/LeadModal';
 import DeltaChip from './components/DeltaChip';
 
@@ -198,9 +200,6 @@ export default function App() {
           fetchedAt={fetchedAt}
           isRefreshing={isRefreshing}
           onRefresh={refresh}
-          compareRange={compareRange}
-          onCompareChange={setCompareRange}
-          onCompareReset={resetCompareRange}
         />
 
         <div className="mb-8">
@@ -229,32 +228,46 @@ export default function App() {
 
         <h2 className="mb-5 font-display text-2xl text-gray-900">Summary</h2>
 
-        <HighlightsSection
-          totalNewPatients={mainCounts.totalNewPatients}
-          missedOpportunities={mainCounts.missedOpportunities}
-          onViewMissed={() => openModal('Missed Opportunities', 'calls', missedCalls)}
-          mainSeries={highlightsDaily.main}
-          compareSeries={highlightsDaily.compare}
-          mainLabel={mainLabel}
-          compareLabel={compareLabel}
-          deltaChipNewPatients={
-            <DeltaChip
-              current={mainCounts.totalNewPatients}
-              previous={compareCounts.totalNewPatients}
-              compareLabel={compareLabel}
+        <div className="grid gap-6 md:grid-cols-[minmax(0,1fr)_320px]">
+          {/* Row 1: Highlights */}
+          <div className="min-w-0">
+            <HighlightsSection
+              totalNewPatients={mainCounts.totalNewPatients}
+              missedOpportunities={mainCounts.missedOpportunities}
+              onViewMissed={() => openModal('Missed Opportunities', 'calls', missedCalls)}
+              deltaChipNewPatients={
+                <DeltaChip
+                  current={mainCounts.totalNewPatients}
+                  previous={compareCounts.totalNewPatients}
+                  compareLabel={compareLabel}
+                />
+              }
+              deltaChipMissed={
+                <DeltaChip
+                  current={mainCounts.missedOpportunities}
+                  previous={compareCounts.missedOpportunities}
+                  compareLabel={compareLabel}
+                />
+              }
             />
-          }
-          deltaChipMissed={
-            <DeltaChip
-              current={mainCounts.missedOpportunities}
-              previous={compareCounts.missedOpportunities}
-              compareLabel={compareLabel}
+          </div>
+          <div className="flex flex-col gap-4">
+            <CompareSidePanel
+              compareRange={compareRange}
+              onChange={setCompareRange}
+              onReset={resetCompareRange}
             />
-          }
-        />
+            <SectionCompareChart
+              mainSeries={highlightsDaily.main}
+              compareSeries={highlightsDaily.compare}
+              mainLabel={mainLabel}
+              compareLabel={compareLabel}
+              accentColor="#2e3e33"
+            />
+          </div>
 
-        <div className="mt-10 space-y-10">
-          <div className="animate-slide-up stagger-4 opacity-0">
+          {/* Row 2: SEO */}
+          <div className="animate-slide-up stagger-4 opacity-0 min-w-0">
             <SourceSection
               title="SEO"
               subtitle="Google Searches, Google Business, AI Search"
@@ -262,10 +275,6 @@ export default function App() {
               callsNewCount={mainCounts.seo.callsNew}
               onViewWebsite={() => openModal('SEO — Website Leads', 'website', seoNewLeads.website)}
               onViewCalls={() => openModal('SEO — Phone Calls', 'calls', seoNewLeads.calls)}
-              mainSeries={seoDaily.main}
-              compareSeries={seoDaily.compare}
-              mainLabel={mainLabel}
-              compareLabel={compareLabel}
               deltaChipWebsite={
                 <DeltaChip
                   current={mainCounts.seo.websiteNew}
@@ -282,7 +291,18 @@ export default function App() {
               }
             />
           </div>
-          <div className="animate-slide-up stagger-5 opacity-0">
+          <div className="min-w-0">
+            <SectionCompareChart
+              mainSeries={seoDaily.main}
+              compareSeries={seoDaily.compare}
+              mainLabel={mainLabel}
+              compareLabel={compareLabel}
+              accentColor="#0D9488"
+            />
+          </div>
+
+          {/* Row 3: PPC */}
+          <div className="animate-slide-up stagger-5 opacity-0 min-w-0">
             <SourceSection
               title="PPC"
               subtitle="Google Ads"
@@ -290,10 +310,6 @@ export default function App() {
               callsNewCount={mainCounts.ppc.callsNew}
               onViewWebsite={() => openModal('PPC — Website Leads', 'website', ppcNewLeads.website)}
               onViewCalls={() => openModal('PPC — Phone Calls', 'calls', ppcNewLeads.calls)}
-              mainSeries={ppcDaily.main}
-              compareSeries={ppcDaily.compare}
-              mainLabel={mainLabel}
-              compareLabel={compareLabel}
               deltaChipWebsite={
                 <DeltaChip
                   current={mainCounts.ppc.websiteNew}
@@ -308,6 +324,15 @@ export default function App() {
                   compareLabel={compareLabel}
                 />
               }
+            />
+          </div>
+          <div className="min-w-0">
+            <SectionCompareChart
+              mainSeries={ppcDaily.main}
+              compareSeries={ppcDaily.compare}
+              mainLabel={mainLabel}
+              compareLabel={compareLabel}
+              accentColor="#2e3e33"
             />
           </div>
         </div>
