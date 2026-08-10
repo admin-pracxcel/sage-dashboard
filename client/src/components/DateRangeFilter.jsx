@@ -1,7 +1,6 @@
-import { MIN_DATE, toDateString } from '../lib/dates';
+import { toDateString } from '../lib/dates';
 
 export default function DateRangeFilter({ dateRange, maxDate, onChange }) {
-  const minStr = toDateString(MIN_DATE);
   const maxStr = toDateString(maxDate);
 
   function handleChange(field, value) {
@@ -24,7 +23,6 @@ export default function DateRangeFilter({ dateRange, maxDate, onChange }) {
         <input
           type="date"
           value={dateRange.from}
-          min={minStr}
           max={maxStr}
           onChange={(e) => handleChange('from', e.target.value)}
         />
@@ -35,7 +33,6 @@ export default function DateRangeFilter({ dateRange, maxDate, onChange }) {
         <input
           type="date"
           value={dateRange.to}
-          min={minStr}
           max={maxStr}
           onChange={(e) => handleChange('to', e.target.value)}
         />

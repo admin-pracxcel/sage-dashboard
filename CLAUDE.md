@@ -5,7 +5,8 @@ Google Sheets and surfaces three things at a glance: total new patients,
 missed phone opportunities, and a breakdown by channel (SEO vs Google Ads)
 and lead type (Website vs Phone Call).
 
-**Scope: May 2026 only.** Other months are out of scope until v2.
+**Scope: multi-month.** Monthly calls tabs are added to `GOOGLE_CALLS_TAB` as each
+month's data becomes available. Default view is the current calendar month.
 
 This file is the source of truth for the project. Read it before touching
 code. Update it when the data model or sections change — drift between this
@@ -149,9 +150,8 @@ parabanks-dashboard/
 
 ### 4.1 Date range filter
 Two `<input type="date">` controls, "From" and "To".
-- `min` on both = `2026-05-01`
 - `max` on both = today's date (computed at render)
-- Default state on first load: From = `2026-05-01`, To = today
+- Default state on first load: From = 1st of current month, To = today.
 - On change, every count below recomputes. No "Apply" button — live.
 - If user picks a "To" before "From", swap them silently.
 
@@ -310,9 +310,6 @@ grows.
 
 If asked, push back. Out of scope until v2:
 
-- **Months other than May 2026.** The date filter is hard-floored at
-  May 1 and the calls sheet name encodes the month. June will need a
-  decision on sheet strategy (one sheet per month? rolling sheet?).
 - Charts / time series
 - Export to CSV
 - Multi-clinic support
@@ -325,6 +322,6 @@ If asked, push back. Out of scope until v2:
 ## 10. Open questions
 
 None blocking — clear to start step 1. Revisit when planning v2:
-- How will new months be added (new sheet per month vs one rolling sheet)?
+- Should each month's calls tab be created manually, or automated via a script?
 - Should the dashboard get a tiny chart strip (daily new patients) once
   multi-month data exists?
