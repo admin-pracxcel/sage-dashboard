@@ -4,6 +4,8 @@ export default function DateRangeFilter({ dateRange, maxDate, onChange }) {
   const maxStr = toDateString(maxDate);
 
   function handleChange(field, value) {
+    // Ignore partial/invalid values fired mid-edit by the native date input.
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return;
     let from = field === 'from' ? value : dateRange.from;
     let to = field === 'to' ? value : dateRange.to;
     if (to < from) [from, to] = [to, from];

@@ -7,6 +7,7 @@ export default function CompareSidePanel({ compareRange, onChange, onReset }) {
   const maxDate = toDateString(today());
 
   function handleField(field, value) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return;
     let from = field === 'from' ? value : compareRange.from;
     let to = field === 'to' ? value : compareRange.to;
     if (to < from) [from, to] = [to, from];
