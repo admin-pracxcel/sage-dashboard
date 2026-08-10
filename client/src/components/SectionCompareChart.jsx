@@ -1,4 +1,4 @@
-import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import { AreaChart, Area, XAxis, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 
 export default function SectionCompareChart({
   mainSeries,
@@ -21,7 +21,7 @@ export default function SectionCompareChart({
   return (
     <div className="h-full w-full">
       <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={data} margin={{ top: 8, right: 12, left: 4, bottom: 4 }}>
+        <AreaChart data={data} margin={{ top: 8, right: 12, left: 4, bottom: 4 }}>
           <XAxis
             dataKey="day"
             tick={{ fontSize: 10, fill: '#9CA3AF' }}
@@ -49,21 +49,26 @@ export default function SectionCompareChart({
             formatter={(name) => (name === 'main' ? mainLabel : compareLabel)}
             iconSize={8}
           />
-          <Bar
-            dataKey="main"
-            fill={mainColor}
-            fillOpacity={1}
-            radius={[2, 2, 0, 0]}
-            isAnimationActive={false}
-          />
-          <Bar
+          {/* Compare rendered first so main paints on top */}
+          <Area
+            type="monotone"
             dataKey="compare"
+            stroke={compareColor}
+            strokeWidth={1.5}
             fill={compareColor}
-            fillOpacity={1}
-            radius={[2, 2, 0, 0]}
+            fillOpacity={0.35}
             isAnimationActive={false}
           />
-        </BarChart>
+          <Area
+            type="monotone"
+            dataKey="main"
+            stroke={mainColor}
+            strokeWidth={1.5}
+            fill={mainColor}
+            fillOpacity={0.45}
+            isAnimationActive={false}
+          />
+        </AreaChart>
       </ResponsiveContainer>
     </div>
   );
