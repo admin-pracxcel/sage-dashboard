@@ -1,6 +1,6 @@
 import AnimatedNumber from './AnimatedNumber';
 
-export default function ChannelCard({ label, count, buttonLabel, onButtonClick, icon, accentClass }) {
+export default function ChannelCard({ label, count, buttonLabel, onButtonClick, icon, accentClass, deltaChip }) {
   return (
     <div className="card group p-5 transition-all duration-300 hover:-translate-y-0.5">
       <div>
@@ -11,6 +11,7 @@ export default function ChannelCard({ label, count, buttonLabel, onButtonClick, 
         <p className={`mt-2 font-display text-4xl ${accentClass || 'text-gray-900'}`}>
           <AnimatedNumber value={count} />
         </p>
+        {deltaChip}
       </div>
       <button
         onClick={onButtonClick}

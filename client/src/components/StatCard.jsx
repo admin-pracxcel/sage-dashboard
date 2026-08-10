@@ -1,6 +1,6 @@
 import AnimatedNumber from './AnimatedNumber';
 
-export default function StatCard({ label, value, sublabel, accent = 'brand', buttonLabel, onButtonClick }) {
+export default function StatCard({ label, value, sublabel, accent = 'brand', buttonLabel, onButtonClick, deltaChip }) {
   const styles = {
     brand: {
       dot: 'bg-brand',
@@ -23,6 +23,11 @@ export default function StatCard({ label, value, sublabel, accent = 'brand', but
       <p className="mt-4 font-display text-5xl text-white">
         <AnimatedNumber value={value} />
       </p>
+      {deltaChip && (
+        <div className="[&>p]:!text-white/70 [&>p.text-brand]:!text-emerald-300 [&>p.text-accent-rose]:!text-rose-300">
+          {deltaChip}
+        </div>
+      )}
       {sublabel && (
         <p className="mt-2 text-xs text-white/50">{sublabel}</p>
       )}
