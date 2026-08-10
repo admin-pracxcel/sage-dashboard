@@ -289,7 +289,7 @@ export default function App() {
           {/* Row 2 chart — vertically centered */}
           <RailCell className="items-center py-4">
             <div className="w-full min-h-[200px] rounded-xl bg-white/10 p-3">
-              <p className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-white/50">Highlights</p>
+              <p className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-white/50">Summary</p>
               <SectionCompareChart
                 mainSeries={highlightsDaily.main}
                 compareSeries={highlightsDaily.compare}
@@ -329,8 +329,8 @@ export default function App() {
             </div>
           </LeftCell>
 
-          {/* Row 3 chart — vertically centered */}
-          <RailCell className="items-center py-4">
+          {/* Row 3 chart — top-aligned with SEO cards (offset past the section heading) */}
+          <RailCell className="items-start pb-4 pt-[88px]">
             <div className="w-full min-h-[200px] rounded-xl bg-white/10 p-3">
               <p className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-white/50">SEO</p>
               <SectionCompareChart
@@ -372,8 +372,8 @@ export default function App() {
             </div>
           </LeftCell>
 
-          {/* Row 4 chart — vertically centered */}
-          <RailCell className="items-center py-4">
+          {/* Row 4 chart — top-aligned with PPC cards (offset past the section heading) */}
+          <RailCell className="items-start pb-4 pt-[88px]">
             <div className="w-full min-h-[200px] rounded-xl bg-white/10 p-3">
               <p className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-white/50">PPC</p>
               <SectionCompareChart
