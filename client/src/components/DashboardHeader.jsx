@@ -1,6 +1,7 @@
 import { formatTimestamp } from '../lib/format';
+import CompareRangePill from './CompareRangePill';
 
-export default function DashboardHeader({ fetchedAt, isRefreshing, onRefresh }) {
+export default function DashboardHeader({ fetchedAt, isRefreshing, onRefresh, compareRange, onCompareChange, onCompareReset }) {
   return (
     <header className="mb-10 animate-fade-in">
       <div className="flex flex-wrap items-end justify-between gap-4">
@@ -16,6 +17,11 @@ export default function DashboardHeader({ fetchedAt, isRefreshing, onRefresh }) 
           </p>
         </div>
         <div className="flex items-center gap-4">
+          <CompareRangePill
+            compareRange={compareRange}
+            onChange={onCompareChange}
+            onReset={onCompareReset}
+          />
           {fetchedAt && (
             <p className="text-xs text-gray-400">
               Updated {formatTimestamp(fetchedAt)}
