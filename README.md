@@ -1,8 +1,9 @@
-# Parabanks Dental — Leads Dashboard (May 2026)
+# Sage Psychological Services — Leads Dashboard
 
 Single-page dashboard that pulls lead data live from two Google Sheets and
 shows new patients, missed phone opportunities, and a breakdown by channel
-(SEO vs Google Ads) and lead type (Website vs Phone Call).
+(SEO vs Google Ads) and lead type (Website vs Phone Call). Includes a
+compare-to-prior-period sidepanel with per-section charts and delta chips.
 
 ## Prerequisites
 
@@ -28,7 +29,7 @@ shows new patients, missed phone opportunities, and a breakdown by channel
    - **GOOGLE_WEBSITE_SHEET_ID** — spreadsheet ID from the website leads sheet URL
    - **GOOGLE_CALLS_SHEET_ID** — spreadsheet ID from the calls sheet URL
    - **GOOGLE_WEBSITE_TAB** — exact tab name (default: `Book Appointment`)
-   - **GOOGLE_CALLS_TAB** — exact tab name (default: `Calls - May 2026`)
+   - **GOOGLE_CALLS_TAB** — comma-separated list of monthly tab names (e.g. `Calls - May 2026,Calls - June 2026,Calls - July 2026`)
    - **GOOGLE_SERVICE_ACCOUNT_KEY** — the full JSON key, single line, in single quotes
 
 3. Share both Google Sheets with the service account email (Viewer permission).
