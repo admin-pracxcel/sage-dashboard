@@ -14,10 +14,10 @@ export function useLeads() {
   const refresh = async () => {
     setIsRefreshing(true);
     try {
-      await queryClient.fetchQuery({
-        queryKey: ['leads'],
-        queryFn: () => fetchLeads({ fresh: true }),
-      });
+      // Bypass TanStack's staleTime — always hit the server with ?fresh=1
+      // and push the result straight into the cache so observers re-render.
+      const data = await fetchLeads({ fresh: true });
+      queryClient.setQueryData(['leads'], data);
     } finally {
       setIsRefreshing(false);
     }
