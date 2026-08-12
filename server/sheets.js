@@ -175,6 +175,26 @@ async function fetchSheet(auth, spreadsheetId, tab) {
   return res.data.values || [];
 }
 
+// List every tab name in a spreadsheet — used when the env var is set to "all".
+async function listSheetTabs(auth, spreadsheetId) {
+  const sheets = google.sheets({ version: 'v4', auth });
+  const res = await sheets.spreadsheets.get({
+    spreadsheetId,
+    fields: 'sheets.properties.title',
+  });
+  return (res.data.sheets || []).map((s) => s.properties.title);
+}
+
+// Resolve an env-var tab list. "all" (case-insensitive) → every tab in the
+// spreadsheet. Otherwise: comma-separated tab names, trimmed.
+async function resolveTabs(auth, spreadsheetId, envValue, fallback) {
+  const raw = (envValue || fallback).trim();
+  if (raw.toLowerCase() === 'all') {
+    return listSheetTabs(auth, spreadsheetId);
+  }
+  return raw.split(',').map((t) => t.trim()).filter(Boolean);
+}
+
 // ---------------------------------------------------------------------------
 // Public: fetch + normalize + cache
 // ---------------------------------------------------------------------------
@@ -192,9 +212,12 @@ export async function fetchLeadsFromSheets({ fresh = false } = {}) {
     .split(',')
     .map((t) => t.trim());
 
-  const callsTabs = (process.env.GOOGLE_CALLS_TAB || 'Calls - May 2026')
-    .split(',')
-    .map((t) => t.trim());
+  const callsTabs = await resolveTabs(
+    auth,
+    process.env.GOOGLE_CALLS_SHEET_ID,
+    process.env.GOOGLE_CALLS_TAB,
+    'Calls - May 2026',
+  );
 
   const allFetches = [
     ...websiteTabs.map((tab) =>
