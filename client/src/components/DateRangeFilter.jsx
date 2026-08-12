@@ -1,7 +1,8 @@
 import { useEffect, useRef } from 'react';
-import { toDateString } from '../lib/dates';
+import { MIN_DATE, toDateString } from '../lib/dates';
 
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
+const MIN_STR = toDateString(MIN_DATE);
 
 export default function DateRangeFilter({ dateRange, maxDate, onChange }) {
   const maxStr = toDateString(maxDate);
@@ -23,6 +24,8 @@ export default function DateRangeFilter({ dateRange, maxDate, onChange }) {
 
   function handleChange(field, value) {
     if (!ISO_DATE.test(value)) return;
+    // Clamp typed values below the launch floor.
+    if (value < MIN_STR) value = MIN_STR;
     if (field === 'from' && value === dateRange.from) return;
     if (field === 'to' && value === dateRange.to) return;
     let from = field === 'from' ? value : dateRange.from;
@@ -45,6 +48,7 @@ export default function DateRangeFilter({ dateRange, maxDate, onChange }) {
           ref={fromRef}
           type="date"
           defaultValue={dateRange.from}
+          min={MIN_STR}
           max={maxStr}
           onChange={(e) => handleChange('from', e.target.value)}
         />
@@ -56,6 +60,7 @@ export default function DateRangeFilter({ dateRange, maxDate, onChange }) {
           ref={toRef}
           type="date"
           defaultValue={dateRange.to}
+          min={MIN_STR}
           max={maxStr}
           onChange={(e) => handleChange('to', e.target.value)}
         />

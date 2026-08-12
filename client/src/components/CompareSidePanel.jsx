@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { formatCompareLabel } from '../lib/format';
-import { today, toDateString } from '../lib/dates';
+import { MIN_DATE, today, toDateString } from '../lib/dates';
 
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
+const MIN_STR = toDateString(MIN_DATE);
 
 export default function CompareSidePanel({ compareRange, onChange, onReset }) {
   const [expanded, setExpanded] = useState(false);
@@ -25,6 +26,7 @@ export default function CompareSidePanel({ compareRange, onChange, onReset }) {
 
   function handleField(field, value) {
     if (!ISO_DATE.test(value)) return;
+    if (value < MIN_STR) value = MIN_STR;
     if (field === 'from' && value === compareRange.from) return;
     if (field === 'to' && value === compareRange.to) return;
     let from = field === 'from' ? value : compareRange.from;
@@ -66,6 +68,7 @@ export default function CompareSidePanel({ compareRange, onChange, onReset }) {
               ref={fromRef}
               type="date"
               defaultValue={compareRange.from}
+              min={MIN_STR}
               max={maxDate}
               onChange={(e) => handleField('from', e.target.value)}
               className="rounded-md border border-black/10 bg-white px-2 py-1 text-xs text-gray-900"
@@ -77,6 +80,7 @@ export default function CompareSidePanel({ compareRange, onChange, onReset }) {
               ref={toRef}
               type="date"
               defaultValue={compareRange.to}
+              min={MIN_STR}
               max={maxDate}
               onChange={(e) => handleField('to', e.target.value)}
               className="rounded-md border border-black/10 bg-white px-2 py-1 text-xs text-gray-900"

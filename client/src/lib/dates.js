@@ -1,3 +1,6 @@
+/** Site launch — no lead data exists before this date. */
+export const MIN_DATE = new Date(2026, 7, 1); // 1 August 2026
+
 /** Today at midnight local (stable per render cycle). */
 export function today() {
   const d = new Date();
