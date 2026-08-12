@@ -103,6 +103,10 @@ function normalizeContactLead(row, headers) {
     return idx >= 0 ? (row[idx] ?? '') : '';
   };
 
+  // Manual conversion filter: rows marked "No" in New Patient are dropped.
+  // Yes / blank / anything else = conversion.
+  if (get('New Patient').trim().toLowerCase() === 'no') return null;
+
   const rawCountry = get('Lead Country');
   const country = rawCountry && rawCountry !== '-' ? rawCountry : null;
 
