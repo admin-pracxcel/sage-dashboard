@@ -67,6 +67,10 @@ function normalizeBookAppointmentLead(row, headers) {
     return idx >= 0 ? (row[idx] ?? '') : '';
   };
 
+  // Manual test-conversion filter: rows marked "Yes" in Is Test are dropped.
+  // Blank / "No" / anything else = real conversion.
+  if (get('Is Test').trim().toLowerCase() === 'yes') return null;
+
   // "2026-08-10 09:15:30" — Perth local time, no TZ suffix.
   const rawDate = get('Booked At');
   const parsed = new Date(rawDate.replace(' ', 'T') + '+08:00');
