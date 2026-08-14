@@ -6,7 +6,10 @@ export function WebsiteLeadRow({ lead, index }) {
       className="border-b border-surface-border/60 transition-colors hover:bg-surface-raised/50"
       style={{ animationDelay: `${index * 20}ms` }}
     >
-      <td className="py-3 pr-4 text-sm text-gray-700">{lead.email}</td>
+      <td className="py-3 pr-4 text-sm text-gray-700">
+        <span className="mr-3 inline-flex min-w-[1.5rem] items-center justify-center rounded bg-surface-raised px-1.5 py-0.5 text-xs font-semibold tabular-nums text-gray-500">{index + 1}</span>
+        {lead.email}
+      </td>
       <td className="py-3 pr-4">
         {lead.country ? (
           <span className="inline-flex rounded bg-surface-raised px-2 py-0.5 text-xs font-medium text-gray-500">
@@ -27,7 +30,10 @@ export function BookAppointmentLeadRow({ lead, index }) {
       className="border-b border-surface-border/60 transition-colors hover:bg-surface-raised/50"
       style={{ animationDelay: `${index * 20}ms` }}
     >
-      <td className="py-3 text-sm text-gray-700">{formatDateTime(lead.leadDate)}</td>
+      <td className="py-3 text-sm text-gray-700">
+        <span className="mr-3 inline-flex min-w-[1.5rem] items-center justify-center rounded bg-surface-raised px-1.5 py-0.5 text-xs font-semibold tabular-nums text-gray-500">{index + 1}</span>
+        {formatDateTime(lead.leadDate)}
+      </td>
     </tr>
   );
 }

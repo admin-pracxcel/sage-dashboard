@@ -1,10 +1,15 @@
 import { useEffect } from 'react';
 import { WebsiteLeadRow, BookAppointmentLeadRow, CallLeadRow } from './LeadRow';
 
-function SectionHeading({ label, count }) {
+function SectionHeading({ label, count, pill }) {
   return (
     <div className="mb-3 mt-2 flex items-baseline gap-2">
       <h4 className="text-sm font-semibold text-gray-700">{label}</h4>
+      {pill && (
+        <span className="inline-flex rounded-md bg-brand/10 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-brand">
+          {pill}
+        </span>
+      )}
       <span className="text-xs text-gray-400">({count})</span>
     </div>
   );
@@ -112,18 +117,20 @@ export default function LeadModal({ title, type, leads, onClose }) {
             (() => {
               const contactLeads = leads.filter((l) => l.type !== 'appointment');
               const appointmentLeads = leads.filter((l) => l.type === 'appointment');
-              const showHeadings = contactLeads.length > 0 && appointmentLeads.length > 0;
+              // Contact heading only appears when both sections exist (for balance).
+              // Appointment heading always appears so the "Zanda" pill is visible.
+              const showContactHeading = contactLeads.length > 0 && appointmentLeads.length > 0;
               return (
                 <div className="space-y-6">
                   {contactLeads.length > 0 && (
                     <section>
-                      {showHeadings && <SectionHeading label="Contact form" count={contactLeads.length} />}
+                      {showContactHeading && <SectionHeading label="Leads via Website Contact Form" count={contactLeads.length} />}
                       <ContactTable leads={contactLeads} />
                     </section>
                   )}
                   {appointmentLeads.length > 0 && (
                     <section>
-                      {showHeadings && <SectionHeading label="Book Appointment" count={appointmentLeads.length} />}
+                      <SectionHeading label="Leads via Booked Appointments" count={appointmentLeads.length} pill="Zanda" />
                       <AppointmentTable leads={appointmentLeads} />
                     </section>
                   )}
