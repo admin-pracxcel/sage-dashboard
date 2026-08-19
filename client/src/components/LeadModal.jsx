@@ -36,6 +36,7 @@ function AppointmentTable({ leads }) {
     <table className="w-full text-left">
       <thead>
         <tr className="border-b border-surface-border">
+          <th className="pb-3 text-[11px] font-semibold uppercase tracking-wider text-gray-400">Email</th>
           <th className="pb-3 text-[11px] font-semibold uppercase tracking-wider text-gray-400">Booked At</th>
         </tr>
       </thead>

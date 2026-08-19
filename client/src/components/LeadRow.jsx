@@ -21,10 +21,11 @@ export function BookAppointmentLeadRow({ lead, index }) {
       className="border-b border-surface-border/60 transition-colors hover:bg-surface-raised/50"
       style={{ animationDelay: `${index * 20}ms` }}
     >
-      <td className="py-3 text-sm text-gray-700">
+      <td className="py-3 pr-4 text-sm text-gray-700">
         <span className="mr-3 inline-flex min-w-[1.5rem] items-center justify-center rounded bg-surface-raised px-1.5 py-0.5 text-xs font-semibold tabular-nums text-gray-500">{index + 1}</span>
-        {formatDateTime(lead.leadDate)}
+        {lead.email || <span className="text-xs text-gray-300">—</span>}
       </td>
+      <td className="py-3 text-sm text-gray-400">{formatDateTime(lead.leadDate)}</td>
     </tr>
   );
 }

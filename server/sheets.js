@@ -68,7 +68,7 @@ function mapCallsSource(raw) {
 // ---------------------------------------------------------------------------
 // Row normalization
 // ---------------------------------------------------------------------------
-// Book Appointment tab: GA4-only, 3 columns, no PII.
+// Book Appointment tab: GA4-style booking rows with an optional Email column.
 // Booked At format: "2026-08-10 09:15:30" (Perth local time, no TZ suffix).
 function normalizeBookAppointmentLead(row, headers) {
   const get = (col) => {
@@ -93,7 +93,7 @@ function normalizeBookAppointmentLead(row, headers) {
 
   return {
     type: 'appointment',
-    email: null,
+    email: get('Email') || null,
     isExistingPatient: null,
     country: null,
     source: mapBookAppointmentSource(sessionSource, sessionMedium),
