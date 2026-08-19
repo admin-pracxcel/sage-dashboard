@@ -34,8 +34,17 @@ function getAuth() {
 // ---------------------------------------------------------------------------
 // Source mapping — PPC is explicit, everything else is SEO
 // ---------------------------------------------------------------------------
+// Contact tab: `Lead Source` is a single string. Historically "google_paid",
+// but GA4-style values like "google / cpc" also land here. Treat anything
+// signaling paid traffic as PPC; default to SEO so unknown values don't
+// inflate paid attribution.
 function mapWebsiteSource(raw) {
-  return raw === 'google_paid' ? 'PPC' : 'SEO';
+  const value = (raw || '').toLowerCase();
+  if (value === 'google_paid') return 'PPC';
+  if (value.includes('cpc')) return 'PPC';
+  if (value.includes('paid')) return 'PPC';
+  if (value.includes('ads')) return 'PPC';
+  return 'SEO';
 }
 
 // GA4-style Book Appointment: PPC if the medium/source signals paid traffic;

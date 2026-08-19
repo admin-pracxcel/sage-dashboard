@@ -140,6 +140,8 @@ export default function App() {
     missedCalls,
     seoNewLeads,
     ppcNewLeads,
+    seoCallsAll,
+    ppcCallsAll,
   } = useMemo(() => {
     const website = data?.website ?? [];
     const calls = data?.calls ?? [];
@@ -152,16 +154,33 @@ export default function App() {
       const ppc = filterBySource(filtered, 'PPC');
       const seoNew = filterNewPatients(seo);
       const ppcNew = filterNewPatients(ppc);
+      const seoMissed = filterMissedOpportunities(seo);
+      const ppcMissed = filterMissedOpportunities(ppc);
+      // For the "View calls" modal — combine new-patient + missed-opportunity
+      // calls per source, newest first.
+      const sortByDateDesc = (a, b) => new Date(b.dateTime) - new Date(a.dateTime);
+      const seoCallsAll = [...seoNew.calls, ...seoMissed.calls].sort(sortByDateDesc);
+      const ppcCallsAll = [...ppcNew.calls, ...ppcMissed.calls].sort(sortByDateDesc);
       return {
         newPatients,
         missed,
         seoNew,
         ppcNew,
+        seoCallsAll,
+        ppcCallsAll,
         counts: {
           totalNewPatients: newPatients.website.length + newPatients.calls.length,
           missedOpportunities: missed.calls.length,
-          seo: { websiteNew: seoNew.website.length, callsNew: seoNew.calls.length },
-          ppc: { websiteNew: ppcNew.website.length, callsNew: ppcNew.calls.length },
+          seo: {
+            websiteNew: seoNew.website.length,
+            callsNew: seoNew.calls.length,
+            callsMissed: seoMissed.calls.length,
+          },
+          ppc: {
+            websiteNew: ppcNew.website.length,
+            callsNew: ppcNew.calls.length,
+            callsMissed: ppcMissed.calls.length,
+          },
         },
       };
     }
@@ -200,6 +219,8 @@ export default function App() {
       missedCalls: main.missed.calls,
       seoNewLeads: main.seoNew,
       ppcNewLeads: main.ppcNew,
+      seoCallsAll: main.seoCallsAll,
+      ppcCallsAll: main.ppcCallsAll,
     };
   }, [data, mainRange, compareRange]);
 
@@ -327,8 +348,9 @@ export default function App() {
                 subtitle="Google Searches, Google Business, AI Search"
                 websiteNewCount={mainCounts.seo.websiteNew}
                 callsNewCount={mainCounts.seo.callsNew}
+                callsMissedCount={mainCounts.seo.callsMissed}
                 onViewWebsite={() => openModal('SEO — Website Leads', 'website', seoNewLeads.website)}
-                onViewCalls={() => openModal('SEO — Phone Calls', 'calls', seoNewLeads.calls)}
+                onViewCalls={() => openModal('SEO — Phone Calls', 'calls', seoCallsAll)}
               />
             </div>
           </LeftCell>
@@ -382,8 +404,9 @@ export default function App() {
                 subtitle="Google Ads"
                 websiteNewCount={mainCounts.ppc.websiteNew}
                 callsNewCount={mainCounts.ppc.callsNew}
+                callsMissedCount={mainCounts.ppc.callsMissed}
                 onViewWebsite={() => openModal('PPC — Website Leads', 'website', ppcNewLeads.website)}
-                onViewCalls={() => openModal('PPC — Phone Calls', 'calls', ppcNewLeads.calls)}
+                onViewCalls={() => openModal('PPC — Phone Calls', 'calls', ppcCallsAll)}
               />
             </div>
           </LeftCell>

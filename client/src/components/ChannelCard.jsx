@@ -1,6 +1,6 @@
 import AnimatedNumber from './AnimatedNumber';
 
-export default function ChannelCard({ label, count, buttonLabel, onButtonClick, icon, accentClass, deltaChip }) {
+export default function ChannelCard({ label, count, missedCount, buttonLabel, onButtonClick, icon, accentClass, deltaChip }) {
   return (
     <div className="card group p-5 transition-all duration-300 hover:-translate-y-0.5">
       <div>
@@ -8,9 +8,23 @@ export default function ChannelCard({ label, count, buttonLabel, onButtonClick, 
           {icon && <span className="text-base">{icon}</span>}
           <p className="text-sm font-medium text-gray-400">{label}</p>
         </div>
-        <p className={`mt-2 font-display text-4xl ${accentClass || 'text-gray-900'}`}>
-          <AnimatedNumber value={count} />
-        </p>
+        <div className="mt-2 flex items-baseline gap-2">
+          <p className={`font-display text-4xl ${accentClass || 'text-gray-900'}`}>
+            <AnimatedNumber value={count} />
+          </p>
+          {missedCount != null && (
+            <>
+              <span className="text-2xl font-light text-gray-300">/</span>
+              <span
+                title={`${missedCount} Missed Opportunity`}
+                className="inline-flex items-baseline gap-1 rounded-lg bg-red-100 px-2.5 py-0.5 text-sm font-semibold text-red-700"
+              >
+                {missedCount}
+                <span className="text-[10px] font-medium uppercase tracking-wide text-red-600">Missed Opportunity</span>
+              </span>
+            </>
+          )}
+        </div>
         {deltaChip}
       </div>
       <button

@@ -10,15 +10,6 @@ export function WebsiteLeadRow({ lead, index }) {
         <span className="mr-3 inline-flex min-w-[1.5rem] items-center justify-center rounded bg-surface-raised px-1.5 py-0.5 text-xs font-semibold tabular-nums text-gray-500">{index + 1}</span>
         {lead.email}
       </td>
-      <td className="py-3 pr-4">
-        {lead.country ? (
-          <span className="inline-flex rounded bg-surface-raised px-2 py-0.5 text-xs font-medium text-gray-500">
-            {lead.country}
-          </span>
-        ) : (
-          <span className="text-xs text-gray-300">—</span>
-        )}
-      </td>
       <td className="py-3 text-sm text-gray-400">{formatDate(lead.leadDate)}</td>
     </tr>
   );
@@ -50,6 +41,15 @@ export function CallLeadRow({ lead, index }) {
         <span className="inline-flex rounded bg-surface-raised px-2 py-0.5 text-xs font-medium text-gray-500">
           {formatDuration(lead.durationSeconds)}
         </span>
+      </td>
+      <td className="py-3 pr-4">
+        {lead.tag === 'Missed Opportunity' ? (
+          <span className="inline-flex rounded-lg bg-red-100 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-red-700">
+            Missed Opportunity
+          </span>
+        ) : (
+          <span className="text-xs text-gray-300">—</span>
+        )}
       </td>
       <td className="py-3 text-sm">
         {lead.recordingUrl ? (

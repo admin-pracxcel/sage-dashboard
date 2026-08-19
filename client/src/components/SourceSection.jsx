@@ -39,6 +39,7 @@ export default function SourceSection({
   subtitle,
   websiteNewCount,
   callsNewCount,
+  callsMissedCount,
   onViewWebsite,
   onViewCalls,
   deltaChipWebsite,
@@ -68,6 +69,7 @@ export default function SourceSection({
           label="Phone Call"
           icon={c.callIcon}
           count={callsNewCount}
+          missedCount={callsMissedCount}
           buttonLabel="View calls"
           onButtonClick={onViewCalls}
           accentClass={c.accent}

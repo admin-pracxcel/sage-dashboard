@@ -21,7 +21,6 @@ function ContactTable({ leads }) {
       <thead>
         <tr className="border-b border-surface-border">
           <th className="pb-3 text-[11px] font-semibold uppercase tracking-wider text-gray-400">Email</th>
-          <th className="pb-3 text-[11px] font-semibold uppercase tracking-wider text-gray-400">Country</th>
           <th className="pb-3 text-[11px] font-semibold uppercase tracking-wider text-gray-400">Date</th>
         </tr>
       </thead>
@@ -55,6 +54,7 @@ function CallsTable({ leads }) {
           <th className="pb-3 text-[11px] font-semibold uppercase tracking-wider text-gray-400">Caller</th>
           <th className="pb-3 text-[11px] font-semibold uppercase tracking-wider text-gray-400">Date</th>
           <th className="pb-3 text-[11px] font-semibold uppercase tracking-wider text-gray-400">Duration</th>
+          <th className="pb-3 text-[11px] font-semibold uppercase tracking-wider text-gray-400">Type</th>
           <th className="pb-3 text-[11px] font-semibold uppercase tracking-wider text-gray-400">Recording</th>
         </tr>
       </thead>
