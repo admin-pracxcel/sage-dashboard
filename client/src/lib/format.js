@@ -1,13 +1,46 @@
 import { format } from 'date-fns';
 
+// The clinic runs on Perth time. Always render in Perth so viewers in
+// other timezones (or Vercel edge previews) see the same wall-clock time
+// the sheet was booked at.
+const PERTH_TZ = 'Australia/Perth';
+
+const dateFmt = new Intl.DateTimeFormat('en-GB', {
+  timeZone: PERTH_TZ,
+  day: 'numeric',
+  month: 'short',
+  year: 'numeric',
+});
+
+const dateTimeFmt = new Intl.DateTimeFormat('en-GB', {
+  timeZone: PERTH_TZ,
+  day: 'numeric',
+  month: 'short',
+  year: 'numeric',
+  hour: 'numeric',
+  minute: '2-digit',
+  hour12: true,
+});
+
+const timestampFmt = new Intl.DateTimeFormat('en-GB', {
+  timeZone: PERTH_TZ,
+  day: 'numeric',
+  month: 'short',
+  year: 'numeric',
+  hour: 'numeric',
+  minute: '2-digit',
+  second: '2-digit',
+  hour12: true,
+});
+
 /** "27 May 2026" */
 export function formatDate(iso) {
-  return format(new Date(iso), 'd MMM yyyy');
+  return dateFmt.format(new Date(iso));
 }
 
-/** "27 May 2026, 3:15 PM" */
+/** "27 May 2026, 3:15 pm" */
 export function formatDateTime(iso) {
-  return format(new Date(iso), 'd MMM yyyy, h:mm a');
+  return dateTimeFmt.format(new Date(iso)).replace(' at ', ', ');
 }
 
 /** "6m 55s" or "0m 12s" */
@@ -24,7 +57,7 @@ export function formatPhone(raw) {
 
 /** "2 minutes ago" style relative timestamp */
 export function formatTimestamp(iso) {
-  return format(new Date(iso), 'd MMM yyyy, h:mm:ss a');
+  return timestampFmt.format(new Date(iso)).replace(' at ', ', ');
 }
 
 import { fromDateString } from './dates';
